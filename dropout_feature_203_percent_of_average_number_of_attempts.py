@@ -5,7 +5,6 @@ Feature 201- number of forum responses per week (also known as CF1)
 Requires that populate_feature_9_average_number_of_attempts.sql has already been run!
 '''
 
-from  scipy.stats import percentileofscore
 import MySQLdb as mdb
 
 def main():
@@ -31,15 +30,15 @@ def main():
 
 
 	for [user_id, week, value] in cursor:
-		insert_percentile(percentileofscore(week_values[week], value), user_id, week, cursor2, connection2)
+		insert_percent(value / max(week_values[week]), user_id, week, cursor2, connection2)
 
 	connection.close()
 	connection2.close()
 
-def insert_percentile(percentile, user_id, week, cursor, connection):
+def insert_percent(percent, user_id, week, cursor, connection):
 	sql = '''INSERT INTO moocdb.dropout_feature_values(dropout_feature_id, user_id, dropout_feature_value_week, dropout_feature_value)
-	VALUES (202, %s, %s, %s)
-	''' % (user_id, week, percentile)
+	VALUES (203, %s, %s, %s)
+	''' % (user_id, week, percent)
 	cursor.execute(sql)
 	connection.commit()
 
