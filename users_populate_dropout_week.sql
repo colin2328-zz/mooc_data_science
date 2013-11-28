@@ -1,6 +1,8 @@
 -- Takes 4 seconds to execute
 -- Created on Jun 30, 2013
 -- @author: Franck for ALFA, MIT lab: franck.dernoncourt@gmail.com
+-- Edited by Colin Taylor on Nov 27, 2013 to include missing last submission id
+-- Meant to be run after create_dropout_feature_values.sql is ran
 
 ALTER TABLE `mock`.`users` 
 ADD COLUMN `user_dropout_week` INT(2) NULL ;

@@ -2,13 +2,15 @@
 -- Created on June 30, 2013
 -- @author: Franck for ALFA, MIT lab: franck.dernoncourt@gmail.com
 -- Feature 1: has the student dropped out (binary, that's what we try to predict)
+-- Edited by Colin Taylor on Nov 27, 2013 to include missing last submission id
+-- Meant to be run after users_populate_dropout_week.sql is run
 
 TRUNCATE TABLE moocdb.dropout_feature_values;
 ALTER TABLE moocdb.dropout_feature_values AUTO_INCREMENT = 1;
 
 drop procedure if exists compute_feature_1;
 
-delimiter #
+delimiter $$
 
 create procedure compute_feature_1()
 begin
@@ -42,7 +44,7 @@ declare v_counter int unsigned default 0;
     set v_counter=v_counter+1;
   end while;
   -- commit;
-end #
+end $$
 
 delimiter ;
 
