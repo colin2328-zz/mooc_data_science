@@ -83,7 +83,7 @@ def main():
     '''
     This is the main function
     '''
-    connection = mdb.connect('127.0.0.1', 'root', 'edx2013', 'beatdb', port=3316) #, charset='utf8', use_unicode=True);
+    connection = mdb.connect('127.0.0.1', 'root', 'edx2013', 'moocdb', port=3316) #, charset='utf8', use_unicode=True);
     export_features(connection)
     connection.close()
     
