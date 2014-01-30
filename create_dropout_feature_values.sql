@@ -2,6 +2,8 @@
 -- Created on Jun 30, 2013
 -- @author: Franck for ALFA, MIT lab: franck.dernoncourt@gmail.com
 
+DROP TABLE if exists `mock`.`dropout_feature_values`;
+
 CREATE TABLE `mock`.`dropout_feature_values` (
   `dropout_feature_value_id` INT NOT NULL AUTO_INCREMENT ,  
   `dropout_feature_id` INT(3) NULL ,
