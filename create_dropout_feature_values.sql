@@ -2,7 +2,7 @@
 -- Created on Jun 30, 2013
 -- @author: Franck for ALFA, MIT lab: franck.dernoncourt@gmail.com
 
-CREATE  TABLE `moocdb`.`dropout_feature_values` (
+CREATE TABLE `moocdb`.`dropout_feature_values` (
   `dropout_feature_value_id` INT NOT NULL AUTO_INCREMENT ,  
   `dropout_feature_id` INT(3) NULL ,
   `user_id` INT(6) NULL ,

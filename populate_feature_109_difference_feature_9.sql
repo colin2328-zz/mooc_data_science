@@ -14,12 +14,13 @@ SELECT 109,
 	dropout_feature_values2.dropout_feature_value  / dropout_feature_values.dropout_feature_value
 FROM moocdb.dropout_feature_values AS dropout_feature_values,
 	moocdb.dropout_feature_values AS dropout_feature_values2
+
 WHERE 
 	-- same user
 	dropout_feature_values.user_id = dropout_feature_values2.user_id
 	-- 2 successive weeks
 	AND dropout_feature_values.dropout_feature_value_week = dropout_feature_values2.dropout_feature_value_week - 1
-	-- we are only interested in feature 5 (average length of forum posts)
+	-- we are only interested in feature 9
 	AND dropout_feature_values.dropout_feature_id = 9
 	AND dropout_feature_values2.dropout_feature_id = 9
 
