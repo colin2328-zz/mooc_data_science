@@ -4,7 +4,7 @@
 -- Feature 103: difference of number of forum posts
 -- 2433 rows
 
-INSERT INTO moocdb.dropout_feature_values(dropout_feature_id, user_id, dropout_feature_value_week, dropout_feature_value)
+INSERT INTO mock.dropout_feature_values(dropout_feature_id, user_id, dropout_feature_value_week, dropout_feature_value)
 
 SELECT 103, 	
 	dropout_feature_values.user_id, 
@@ -12,8 +12,8 @@ SELECT 103,
 	-- dropout_feature_values.dropout_feature_value,
 	-- dropout_feature_values2.dropout_feature_value,
 	dropout_feature_values2.dropout_feature_value  / dropout_feature_values.dropout_feature_value
-FROM moocdb.dropout_feature_values AS dropout_feature_values,
-	moocdb.dropout_feature_values AS dropout_feature_values2
+FROM mock.dropout_feature_values AS dropout_feature_values,
+	mock.dropout_feature_values AS dropout_feature_values2
 
 WHERE 
 	-- same user

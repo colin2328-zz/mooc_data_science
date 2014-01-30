@@ -3,17 +3,30 @@
 -- @author: Franck for ALFA, MIT lab: franck.dernoncourt@gmail.com
 -- Edited by Colin Taylor on Nov 27, 2013 to include missing last submission id
 -- Meant to be run after create_dropout_feature_values.sql is ran
+DROP PROCEDURE IF EXISTS mock.AlterTable;
+DELIMITER $$
+CREATE PROCEDURE mock.AlterTable()
+BEGIN
+    DECLARE _count INT;
+    SET _count = ( SELECT count(*) FROM INFORMATION_SCHEMA.COLUMNS 
+                   WHERE TABLE_SCHEMA = 'mock' AND 
+                         TABLE_NAME = 'users' AND 
+                         COLUMN_NAME = 'user_dropout_week');
+    IF _count = 0 THEN
+    ALTER TABLE `mock`.`users` 
+    ADD COLUMN `user_dropout_week` INT(2) NULL ;
+    ALTER TABLE `mock`.`users` 
+    ADD COLUMN `user_dropout_timestamp` DATETIME NULL ;
+    ALTER TABLE `mock`.`users` 
+    ADD COLUMN `user_last_submission_id` INT(11) NULL ;
+    END IF;
+END $$
+DELIMITER ;
 
-ALTER TABLE `mock`.`users` 
-ADD COLUMN `user_dropout_week` INT(2) NULL ;
+CALL mock.AlterTable();
+DROP PROCEDURE IF EXISTS mock.AlterTable;
 
-ALTER TABLE `mock`.`users` 
-ADD COLUMN `user_dropout_timestamp` DATETIME NULL ;
-
-ALTER TABLE `mock`.`users` 
-ADD COLUMN `user_last_submission_id` INT(11) NULL ;
-
-
+use `mock`;
 UPDATE `mock`.`users` 
 SET users.user_last_submission_id = (
     SELECT submission_id

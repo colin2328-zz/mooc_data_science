@@ -9,14 +9,14 @@ from  scipy.stats import percentileofscore
 import MySQLdb as mdb
 
 def main():
-	connection=mdb.connect(user="root",passwd="edx2013",db="moocdb")
+	connection=mdb.connect(user="root",passwd="edx2013",db="mock")
 	cursor = connection.cursor()
 
-	connection2=mdb.connect(user="root",passwd="edx2013",db="moocdb")
+	connection2=mdb.connect(user="root",passwd="edx2013",db="mock")
 	cursor2 = connection2.cursor()
 
 	sql = '''SELECT user_id, dropout_feature_value_week, dropout_feature_value 
-			FROM moocdb.dropout_feature_values
+			FROM mock.dropout_feature_values
 			WHERE dropout_feature_id = 9;
 			'''
 
@@ -37,7 +37,7 @@ def main():
 	connection2.close()
 
 def insert_percentile(percentile, user_id, week, cursor, connection):
-	sql = '''INSERT INTO moocdb.dropout_feature_values(dropout_feature_id, user_id, dropout_feature_value_week, dropout_feature_value)
+	sql = '''INSERT INTO mock.dropout_feature_values(dropout_feature_id, user_id, dropout_feature_value_week, dropout_feature_value)
 	VALUES (202, %s, %s, %s)
 	''' % (user_id, week, percentile)
 	cursor.execute(sql)
