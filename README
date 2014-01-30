@@ -1,0 +1,1 @@
+Contains the sql and python scripts necessary to extract features for dropout prediction. Note that some scripts rely on others. Look at run_scripts.sh for the order
