@@ -1,4 +1,4 @@
--- Created on Nov 21, 2013
+-- Created on Feb 14, 2014
 -- @author: Colin Taylor colin2328@gmail.com
 -- Feature 208- number of attempts that were correct 
 
@@ -16,7 +16,7 @@ INNER JOIN mock.submissions AS submissions
 INNER JOIN mock.assessments
  ON assessments.submission_id = submissions.submission_id
 WHERE users.user_dropout_week IS NOT NULL
-AND assessments.assessment_grade = 0
+AND assessments.assessment_grade = 1
 AND FLOOR((UNIX_TIMESTAMP(submissions.submission_timestamp) 
 		- UNIX_TIMESTAMP('2012-03-05 12:00:00')) / (3600 * 24 * 7)) < 16
 GROUP BY users.user_id, week
