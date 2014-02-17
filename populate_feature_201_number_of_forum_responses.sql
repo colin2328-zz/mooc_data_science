@@ -11,7 +11,7 @@ SELECT 201,
 	COUNT(*) 
 FROM mock.users AS users
 INNER JOIN mock.collaborations AS collaborations
- ON collaborations.user_id = users.user_id
+	ON collaborations.user_id = users.user_id
 WHERE users.user_dropout_week IS NOT NULL
 AND collaborations.collaboration_type_id = 2
 GROUP BY users.user_id, week
