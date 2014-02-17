@@ -4,7 +4,7 @@
 
 INSERT INTO mock.dropout_feature_values(dropout_feature_id, user_id, dropout_feature_value_week, dropout_feature_value)
 	
-SELECT 201, 	
+SELECT 201,
 	users.user_id, 
 	FLOOR((UNIX_TIMESTAMP(collaborations.collaboration_timestamp) 
 			- UNIX_TIMESTAMP('2012-03-05 12:00:00')) / (3600 * 24 * 7)) AS week,
@@ -12,11 +12,10 @@ SELECT 201,
 FROM mock.users AS users
 INNER JOIN mock.collaborations AS collaborations
  ON collaborations.user_id = users.user_id
-WHERE users.user_dropout_week IS NOT NULL 
-	-- AND users.user_id < 100
-	-- AND collaborations.collaboration_parent_id = 1 -- = 1 mean forum posts
-	AND FLOOR((UNIX_TIMESTAMP(collaborations.collaboration_timestamp) 
-			- UNIX_TIMESTAMP('2012-03-05 12:00:00')) / (3600 * 24 * 7)) < 16
+WHERE users.user_dropout_week IS NOT NULL
+AND collaborations.collaboration_type_id = 2
 GROUP BY users.user_id, week
+HAVING week < 16
+AND week > 0
 ;
 

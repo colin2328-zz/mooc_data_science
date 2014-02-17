@@ -15,7 +15,7 @@ INNER JOIN mock.users
 	ON submissions.user_id = users.user_id
 INNER JOIN mock.problems
 	ON submissions.problem_id = problems.problem_id
-AND users.user_dropout_week IS NOT NULL
+WHERE users.user_dropout_week IS NOT NULL
 GROUP BY users.user_id, week
-HAVING week < 15
+HAVING week < 16
 AND week > 0;
