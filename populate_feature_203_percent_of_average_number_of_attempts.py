@@ -1,7 +1,7 @@
 ''' 
 Created on Nov 21, 2013
 @author: Colin Taylor colin2328@gmail.com
-Feature 201- number of forum responses per week (also known as CF1)
+Feature 203- A student's average number of attempts as compared with other students as a percent of max
 Requires that populate_feature_9_average_number_of_attempts.sql has already been run!
 '''
 
