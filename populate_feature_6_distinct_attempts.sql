@@ -1,6 +1,7 @@
 -- Takes 300 seconds to execute
 -- Created on July 1, 2013
 -- @author: Franck for ALFA, MIT lab: franck.dernoncourt@gmail.com
+-- edited by Colin Taylor on Feb 17, 2014
 -- Feature 6: number of distinct problems attempted
 -- (supported by http://francky.me/mit/mock/all/forum_posts_per_day_date_labels_cutoff120_with_and_without_cert.html)
 
@@ -15,7 +16,6 @@ FROM mock.users AS users
 INNER JOIN mock.submissions AS submissions
  ON submissions.user_id = users.user_id
 WHERE users.user_dropout_week IS NOT NULL 
-	-- AND users.user_id < 100
 	AND FLOOR((UNIX_TIMESTAMP(submissions.submission_timestamp) 
 			- UNIX_TIMESTAMP('2012-03-05 12:00:00')) / (3600 * 24 * 7)) < 16
 GROUP BY users.user_id, week
