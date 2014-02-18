@@ -2,6 +2,7 @@
 Created on July 02, 2013
 
 @author: Colin for ALFA, MIT lab: colin2328@gmail.com
+Feature 13- Variance of a students observed event timestamps in one week 
 
 Modifications:
  2013-07-04 - Franck Dernoncourt - franck.dernoncourt@gmail.com - fixed a few typos + add a TODO which needs to be fixed
