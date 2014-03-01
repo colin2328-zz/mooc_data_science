@@ -14,10 +14,10 @@ import math
 
 
 def main():
-	connection=mdb.connect(user="root",passwd="edx2013",db="moocdb")
+	connection=mdb.connect(user="root",passwd="",db="moocdb")
 	cursor = connection.cursor()
 
-	connection2=mdb.connect(user="root",passwd="edx2013",db="moocdb")
+	connection2=mdb.connect(user="root",passwd="",db="moocdb")
 	cursor2 = connection2.cursor()
 
 	#get all the observed events times for a user for a week
