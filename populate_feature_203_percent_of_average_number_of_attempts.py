@@ -8,14 +8,14 @@ Requires that populate_feature_9_average_number_of_attempts.sql has already been
 import MySQLdb as mdb
 
 def main():
-	connection=mdb.connect(user="root",passwd="edx2013",db="mock")
+	connection=mdb.connect(user="root",passwd="edx2013",db="moocdb")
 	cursor = connection.cursor()
 
-	connection2=mdb.connect(user="root",passwd="edx2013",db="mock")
+	connection2=mdb.connect(user="root",passwd="edx2013",db="moocdb")
 	cursor2 = connection2.cursor()
 
 	sql = '''SELECT user_id, dropout_feature_value_week, dropout_feature_value 
-			FROM mock.dropout_feature_values
+			FROM moocdb.dropout_feature_values
 			WHERE dropout_feature_id = 9;
 			'''
 
@@ -36,7 +36,7 @@ def main():
 	connection2.close()
 
 def insert_percent(percent, user_id, week, cursor, connection):
-	sql = '''INSERT INTO mock.dropout_feature_values(dropout_feature_id, user_id, dropout_feature_value_week, dropout_feature_value)
+	sql = '''INSERT INTO moocdb.dropout_feature_values(dropout_feature_id, user_id, dropout_feature_value_week, dropout_feature_value)
 	VALUES (203, %s, %s, %s)
 	''' % (user_id, week, percent)
 	cursor.execute(sql)

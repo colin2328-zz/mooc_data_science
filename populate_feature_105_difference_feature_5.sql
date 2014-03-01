@@ -4,7 +4,7 @@
 -- Feature 105: difference of Feature 5 (average length of forum posts)
 -- 2433 rows
 
-INSERT INTO mock.dropout_feature_values(dropout_feature_id, user_id, dropout_feature_value_week, dropout_feature_value)
+INSERT INTO moocdb.dropout_feature_values(dropout_feature_id, user_id, dropout_feature_value_week, dropout_feature_value)
 
 SELECT 105, 	
 	dropout_feature_values.user_id, 
@@ -12,9 +12,9 @@ SELECT 105,
 	-- dropout_feature_values.dropout_feature_value,
 	-- dropout_feature_values2.dropout_feature_value,
 	dropout_feature_values2.dropout_feature_value  / dropout_feature_values.dropout_feature_value
-FROM mock.dropout_feature_values AS dropout_feature_values,
-	mock.dropout_feature_values AS dropout_feature_values2,
-	mock.dropout_feature_values AS dropout_feature_values3
+FROM moocdb.dropout_feature_values AS dropout_feature_values,
+	moocdb.dropout_feature_values AS dropout_feature_values2,
+	moocdb.dropout_feature_values AS dropout_feature_values3
 
 WHERE 
 	-- same user

@@ -8,4 +8,4 @@ do
 	mysql -u root -e "source ${file}"
 done
 
-# echo $(mysql -u root -e "select * from mock.dropout_feature_values")
+# echo $(mysql -u root -e "select * from moocdb.dropout_feature_values")

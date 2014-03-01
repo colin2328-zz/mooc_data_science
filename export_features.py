@@ -28,7 +28,7 @@ def export_features(connection):
     
     sql = '''\
                         SELECT user_id, dropout_feature_value_week, dropout_feature_id, dropout_feature_value 
-                        FROM mock.dropout_feature_values 
+                        FROM moocdb.dropout_feature_values 
                         WHERE dropout_feature_values.dropout_feature_value_week < 15
                         AND dropout_feature_values.dropout_feature_value_week >= 0
                         ORDER BY dropout_feature_values.user_id  
@@ -83,7 +83,7 @@ def main():
     '''
     This is the main function
     '''
-    connection = mdb.connect('127.0.0.1', 'root', 'edx2013', 'mock', port=3316) #, charset='utf8', use_unicode=True);
+    connection = mdb.connect('127.0.0.1', 'root', 'edx2013', 'moocdb', port=3316) #, charset='utf8', use_unicode=True);
     export_features(connection)
     connection.close()
     

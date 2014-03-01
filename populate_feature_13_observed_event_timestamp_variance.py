@@ -14,10 +14,10 @@ import math
 
 
 def main():
-	connection=mdb.connect(user="root",passwd="edx2013",db="mock")
+	connection=mdb.connect(user="root",passwd="edx2013",db="moocdb")
 	cursor = connection.cursor()
 
-	connection2=mdb.connect(user="root",passwd="edx2013",db="mock")
+	connection2=mdb.connect(user="root",passwd="edx2013",db="moocdb")
 	cursor2 = connection2.cursor()
 
 	#get all the observed events times for a user for a week
@@ -25,7 +25,7 @@ def main():
 	sql = '''SELECT observed_events.user_id, FLOOR((UNIX_TIMESTAMP(observed_events.observed_event_timestamp) 
 			- UNIX_TIMESTAMP('2012-03-05 12:00:00')) / (3600 * 24 * 7)) 
 			AS week, observed_event_timestamp
-			FROM mock.observed_events AS observed_events
+			FROM moocdb.observed_events AS observed_events
 			GROUP BY observed_events.user_id, week, observed_event_timestamp ASC
 			'''
 
@@ -36,7 +36,7 @@ def main():
 	sql2 = '''SELECT observed_events.user_id, FLOOR((UNIX_TIMESTAMP(observed_events.observed_event_timestamp) 
 			- UNIX_TIMESTAMP('2012-03-05 12:00:00')) / (3600 * 24 * 7)) 
 			AS week, observed_event_timestamp
-			FROM mock.observed_events AS observed_events
+			FROM moocdb.observed_events AS observed_events
 			GROUP BY observed_events.user_id, week, observed_event_timestamp ASC
 			LIMIT 1
 			'''
@@ -77,7 +77,7 @@ def compute_deviation(times):
 	return std_dev
 
 def insert_deviation(entropy, user_id, week, cursor, connection):
-	sql = '''INSERT INTO mock.dropout_feature_values(dropout_feature_id, user_id, dropout_feature_value_week, dropout_feature_value)
+	sql = '''INSERT INTO moocdb.dropout_feature_values(dropout_feature_id, user_id, dropout_feature_value_week, dropout_feature_value)
 	VALUES (13, %s, %s, %s)
 	''' % (user_id, week, entropy)
 	cursor.execute(sql)
