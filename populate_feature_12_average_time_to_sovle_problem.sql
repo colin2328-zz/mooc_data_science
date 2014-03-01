@@ -35,4 +35,6 @@ WHERE users.user_dropout_week IS NOT NULL
 			- UNIX_TIMESTAMP('2012-03-05 12:00:00')) / (3600 * 24 * 7)) < 16
 	
 GROUP BY users.user_id, week
+HAVING week < 16
+AND week > 0
 ;

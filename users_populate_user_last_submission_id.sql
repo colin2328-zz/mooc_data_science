@@ -3,8 +3,8 @@
 -- @author: Franck Dernoncourt for ALFA, MIT lab: franck.dernoncourt@gmail.com
 
 -- First create index:  (takes 250 seconds to run)
-ALTER TABLE `moocdb`.`submissions` 
-ADD INDEX `user-timestamp_idx` (`user_id` ASC, `submission_timestamp` ASC) ;
+-- ALTER TABLE `moocdb`.`submissions` 
+-- ADD INDEX `user-timestamp_idx` (`user_id` ASC, `submission_timestamp` ASC) ;
 
 DROP PROCEDURE IF EXISTS moocdb.Alter_Table;
 

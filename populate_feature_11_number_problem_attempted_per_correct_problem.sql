@@ -22,5 +22,7 @@ WHERE dropout_feature_values.user_id = dropout_feature_values2.user_id
 	AND dropout_feature_values.dropout_feature_value_week = dropout_feature_values2.dropout_feature_value_week 
 	AND dropout_feature_values.dropout_feature_id = 8
 	AND dropout_feature_values2.dropout_feature_id = 6
+HAVING week < 16
+AND week > 0
 ;
 
