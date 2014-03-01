@@ -1,43 +1,14 @@
 -- Takes 4 seconds to execute
 -- Created on Jun 30, 2013
 -- @author: Franck for ALFA, MIT lab: franck.dernoncourt@gmail.com
--- Edited by Colin Taylor on Nov 27, 2013 to include missing last submission id
--- Meant to be run after create_dropout_feature_values.sql is ran
-DROP PROCEDURE IF EXISTS moocdb.AlterTable;
-DELIMITER $$
-CREATE PROCEDURE moocdb.AlterTable()
-BEGIN
-    DECLARE _count INT;
-    SET _count = ( SELECT count(*) FROM INFORMATION_SCHEMA.COLUMNS 
-                   WHERE TABLE_SCHEMA = 'moocdb' AND 
-                         TABLE_NAME = 'users' AND 
-                         COLUMN_NAME = 'user_dropout_week');
-    IF _count = 0 THEN
-    ALTER TABLE `moocdb`.`users` 
-    ADD COLUMN `user_dropout_week` INT(2) NULL ;
-    ALTER TABLE `moocdb`.`users` 
-    ADD COLUMN `user_dropout_timestamp` DATETIME NULL ;
-    ALTER TABLE `moocdb`.`users` 
-    ADD COLUMN `user_last_submission_id` INT(11) NULL ;
-    END IF;
-END $$
-DELIMITER ;
+-- Edited by Colin Taylor on Nov 27, 2013 to 
+-- Meant to be run after create_dropout_feature_values.sql and users_populate_user_last_submission_id.sql
 
-CALL moocdb.AlterTable();
-DROP PROCEDURE IF EXISTS moocdb.AlterTable;
+ALTER TABLE `moocdb`.`users` 
+ADD COLUMN `user_dropout_week` INT(2) NULL ;
 
-use `moocdb`;
-UPDATE `moocdb`.`users` 
-SET users.user_last_submission_id = (
-    SELECT submission_id
-    FROM submissions t1
-    WHERE t1.submission_timestamp = (
-        SELECT MAX(t2.submission_timestamp)
-         FROM submissions t2
-         WHERE t2.user_id = t1.user_id
-    ) AND users.user_id = t1.user_id
-)
-;
+ALTER TABLE `moocdb`.`users` 
+ADD COLUMN `user_dropout_timestamp` DATETIME NULL ;
 
 -- Takes 2 seconds to execute
 UPDATE `moocdb`.`users` 

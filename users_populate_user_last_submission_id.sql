@@ -3,8 +3,8 @@
 -- @author: Franck Dernoncourt for ALFA, MIT lab: franck.dernoncourt@gmail.com
 
 -- First create index:  (takes 250 seconds to run)
--- ALTER TABLE `moocdb`.`submissions` 
--- ADD INDEX `user-timestamp_idx` (`user_id` ASC, `submission_timestamp` ASC) ;
+ALTER TABLE `moocdb`.`submissions` 
+ADD INDEX `user-timestamp_idx` (`user_id` ASC, `submission_timestamp` ASC) ;
 
 DROP PROCEDURE IF EXISTS moocdb.Alter_Table;
 
@@ -33,7 +33,6 @@ BEGIN
 				moocdb.submissions AS submissions
 			WHERE
 				users.user_id = submissions.user_id
--- 					AND users.user_id < 1000
 					AND submissions.submission_timestamp = (SELECT 
 						MAX(submissions.submission_timestamp)
 					FROM

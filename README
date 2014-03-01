@@ -1,1 +1,8 @@
-Contains the sql and python scripts necessary to extract features for dropout prediction. Note that some scripts rely on others. Look at run_scripts.sh for the order
+Contains the sql and python scripts necessary to extract features for dropout prediction. Note that some scripts rely on others. 
+
+Run:
+create_dropout_feature_values.sql
+users_populate_user_last_submission_id.sql
+users_populate_user_last_submission_id.sql 
+users_populate_dropout_week.sql 
+populate_feature_1_dropout.sql
