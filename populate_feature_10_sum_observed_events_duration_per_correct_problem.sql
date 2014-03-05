@@ -6,8 +6,8 @@
 
 -- You need to create this index, otherwise it will take for ever
 -- Takes 10 seconds to execute
--- ALTER TABLE `moocdb`.`dropout_feature_values` 
--- ADD INDEX `user_week_idx` (`user_id` ASC, `dropout_feature_value_week` ASC) ;
+ALTER TABLE `moocdb`.`dropout_feature_values` 
+ADD INDEX `user_week_idx` (`user_id` ASC, `dropout_feature_value_week` ASC) ;
 
 
 INSERT INTO moocdb.dropout_feature_values(dropout_feature_id, user_id, dropout_feature_value_week, dropout_feature_value)

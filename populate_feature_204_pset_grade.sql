@@ -1,7 +1,7 @@
 -- Created on Jan 31, 2014
 -- @author:  Colin Taylor
 -- Feature 204: Pset Grade: Number of homework problems correct in a week's problems / number of homework problems in a week
--- Meant to be run in order to run after problem_populate_module_week.sql
+-- Meant to be run in order to run after problems_populate_module_week.sql
 
 INSERT INTO moocdb.dropout_feature_values(dropout_feature_id, user_id, dropout_feature_value_week, dropout_feature_value)
 
