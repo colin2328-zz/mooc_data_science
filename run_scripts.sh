@@ -14,9 +14,9 @@ for file in ${sql_files[@]}
 do 
 	start_time=$(date +%s)
 	print_and_save "Running ${file} on $(date)" ${out_file}
-	mysql -u root -e "source ${file}"
+	mysql -u root -pedx2013 -P3316 -e "source ${file}"
 	end_time=$(date +%s)
-	total_time=$((${start_time} - ${end_time}))
+	total_time=$((${end_time} - ${start_time}))
 	print_and_save "Finished Running ${file} in ${total_time} seconds" ${out_file}
 done
 
@@ -26,7 +26,7 @@ do
 	print_and_save "Running ${file} on $(date)" ${out_file}
 	python ${file}
 	end_time=$(date +%s)
-	total_time=$((${start_time} - ${end_time}))
+	total_time=$((${end_time} - ${start_time}))
 	print_and_save "Finished Running ${file} in ${total_time} seconds" ${out_file}
 done
 
