@@ -9,10 +9,10 @@ from  scipy.stats import percentileofscore
 import MySQLdb as mdb
 
 def main():
-	connection=mdb.connect(user="root",passwd="",db="moocdb")
+	connection=mdb.connect(user="root",passwd="edx2013", port=3316,db="moocdb")
 	cursor = connection.cursor()
 
-	connection2=mdb.connect(user="root",passwd="",db="moocdb")
+	connection2=mdb.connect(user="root",passwd="edx2013", port=3316,db="moocdb")
 	cursor2 = connection2.cursor()
 
 	sql = '''SELECT user_id, dropout_feature_value_week, dropout_feature_value 
