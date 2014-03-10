@@ -17,5 +17,5 @@ INNER JOIN moocdb.problems
 	ON submissions.problem_id = problems.problem_id
 WHERE users.user_dropout_week IS NOT NULL
 GROUP BY users.user_id, week
-HAVING week < 16
-AND week > 0;
+HAVING week < 15
+AND week >= 0;

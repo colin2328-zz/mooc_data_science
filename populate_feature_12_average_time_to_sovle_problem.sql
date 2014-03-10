@@ -32,9 +32,9 @@ WHERE users.user_dropout_week IS NOT NULL
 		)
 	-- AND users.user_id <  1000
 	AND FLOOR((UNIX_TIMESTAMP(submissions.submission_timestamp) 
-			- UNIX_TIMESTAMP('2012-03-05 12:00:00')) / (3600 * 24 * 7)) < 16
+			- UNIX_TIMESTAMP('2012-03-05 12:00:00')) / (3600 * 24 * 7)) < 15
 	
 GROUP BY users.user_id, week
-HAVING week < 16
-AND week > 0
+HAVING week < 15
+AND week >= 0
 ;

@@ -5,7 +5,7 @@
 
 INSERT INTO moocdb.dropout_feature_values(dropout_feature_id, user_id, dropout_feature_value_week, dropout_feature_value)
 
-SELECT 206, submissions.user_id, problems.problem_week + 1 AS week, COUNT(*) /
+SELECT 206, submissions.user_id, problems.problem_week AS week, COUNT(*) /
 	(SELECT COUNT(*)  FROM problems AS p2 WHERE p2.problem_type_id = 1 
 		AND p2.problem_week = problems.problem_week GROUP BY problem_week) AS pset_grade
 FROM moocdb.submissions
@@ -19,5 +19,5 @@ WHERE users.user_dropout_week IS NOT NULL
 AND problems.problem_type_id = 3
 AND assessments.assessment_grade = 1
 GROUP BY submissions.user_id, problems.problem_week
-HAVING week < 16
-AND week > 0;
+HAVING week < 15
+AND week >= 0;
