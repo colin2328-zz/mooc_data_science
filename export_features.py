@@ -20,8 +20,8 @@ def export_features(connection):
     '''
     
     number_of_weeks = 15 # if you change this, but the date the SQL query to dropout_feature_values.dropout_feature_value_week < number_of_weeks 
-    missing_value = - 1
-    features_set = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 201, 202, 203, 204, 205, 206, 207, 208, 209, 210]
+    features_set =   [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 201, 202, 203, 204, 205, 206, 207, 208, 209, 210]
+    missing_values = [0, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1, -1,  0,  0,  0,   0,   0,   0,   0,  -1,   0,   0,  -1,   0,  -1] # defaults for features
     number_of_features = len(features_set)
     cursor = connection.cursor()    
     record_list = list()
@@ -50,7 +50,7 @@ def export_features(connection):
         feature_value = row[3]
         # create new students if not existing
         if not user_id in features:
-            features[user_id] = [[missing_value for i in range(number_of_features)] for j in range(number_of_weeks)]
+            features[user_id] = [missing_values[:] for j in range(number_of_weeks)]
         
         features[user_id][week_number][feature_number] = feature_value
         
@@ -61,7 +61,9 @@ def export_features(connection):
     # Add headers
     file_output.write('week_number,')
     for feature_number in features_set:
-        file_output.write(' feature_' + str(feature_number) + ',')
+        file_output.write('feature_' + str(feature_number))
+        if features_set.index(feature_number) != len(features_set) - 1:
+            file_output.write(',')
     file_output.write('\n') 
     
     # Save all the features to a file
@@ -82,8 +84,8 @@ def main():
     '''
     This is the main function
     '''
-    # connection = mdb.connect(user="root",passwd="edx2013", port=3316,db="moocdb")#, charset='utf8', use_unicode=True);
-    connection = mdb.connect(user="root",passwd="", port=3306,db="moocdb")#, charset='utf8', use_unicode=True);
+    connection = mdb.connect(user="root",passwd="edx2013", port=3316,db="moocdb")#, charset='utf8', use_unicode=True);
+    # connection = mdb.connect(user="root",passwd="", port=3306,db="moocdb")#, charset='utf8', use_unicode=True);
 
     export_features(connection)
     connection.close()
