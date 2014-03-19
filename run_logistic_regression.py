@@ -50,7 +50,7 @@ def run_regression(in_file, lead, lag):
 	pl.ylim([0.0, 1.0])
 	pl.xlabel('False Positive Rate')
 	pl.ylabel('True Positive Rate')
-	pl.title('ROC- lead = % lag = %' % lead, lag)
+	pl.title('ROC- lead = %s lag = %s' % (lead, lag))
 	pl.legend(loc="lower right")
 	pl.show()
 
