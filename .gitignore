@@ -1,0 +1,4 @@
+*.pyc
+play.py
+features*.csv
+out*.csv

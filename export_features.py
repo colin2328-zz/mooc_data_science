@@ -52,7 +52,8 @@ def export_features(connection):
         if not user_id in features:
             features[user_id] = [missing_values[:] for j in range(number_of_weeks)]
         
-        features[user_id][week_number][feature_number] = feature_value
+        if feature_value != None:
+            features[user_id][week_number][feature_number] = feature_value
         
         if i % 10000 == 0:
             print str(float(i) / cursor.rowcount * 100) + '% done'

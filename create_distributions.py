@@ -5,15 +5,15 @@ Created on March 17, 2013
 
 import csv
 import argparse
-import numpy
+import numpy as np
         
-def main(out_file, in_file, lead, lag):
+def create_features(out_file, in_file, lead, lag):
     prefix = 'feature_'
     num_weeks = 15
 
     in_csv = open(in_file)
     csv_reader = csv.DictReader(in_csv)
-    
+
 
     #assert that the csv reader file is valid
     in_header = csv_reader.fieldnames
@@ -27,10 +27,11 @@ def main(out_file, in_file, lead, lag):
     out_csv = open(out_file, "wb")
     csv_writer = csv.writer(out_csv, delimiter= ',')
     
-    data = numpy.genfromtxt(in_file, delimiter = ',', skip_header = 1)
+    data = np.genfromtxt(in_file, delimiter = ',', skip_header = 1)
 
     start_idx = 0
     end_idx = len(data)
+
 
     while start_idx < end_idx:
         #for each student
@@ -40,6 +41,7 @@ def main(out_file, in_file, lead, lag):
             write_array = [start_week]
             active_week = start_week
             while active_week - start_week < lag: #add data from each lag week
+                # write_array += map(lambda (x): '%f' % round(x, 10), stud_data[active_week, 1:].tolist())
                 write_array += stud_data[active_week, 1:].tolist()
                 active_week+=1
             label = stud_data[start_week + lead + lag - 1][0]
@@ -53,10 +55,10 @@ def main(out_file, in_file, lead, lag):
     
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Create feature csv with given lead and lag.')
-    parser.add_argument('out_file',type=str) # output csv
     parser.add_argument('in_file',type=str)  # input csv
+    parser.add_argument('out_file',type=str) # output csv
     parser.add_argument('lead',type=int)  # number of weeks ahead to predict
     parser.add_argument('lag',type=int)  # number of weeks of features to use
     args = parser.parse_args()
 
-    main(args.out_file, args.in_file, args.lead, args.lag)
+    create_features(args.out_file, args.in_file, args.lead, args.lag)
