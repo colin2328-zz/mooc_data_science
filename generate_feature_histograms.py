@@ -7,6 +7,29 @@ import numpy as np
 import pylab as pl
 import csv
 
+def generate_histograms():
+	num_weeks = 15
+	num_features = 25
+	in_file = "features.csv"
+
+	feature_set = validate_csv(in_file)	
+
+	data = np.genfromtxt(in_file, delimiter = ',', skip_header = 1)
+	start_time = time.time()
+	print "loaded data in", time.time() - start_time, "seconds"	
+
+	pl.clf()
+	feature_index = 1
+	while feature_index <= num_features:
+		feature_distribution = data[:, feature_index]
+		start_time = time.time()
+		graph_distribution(np.ma.masked_where(feature_distribution == -1, feature_distribution), feature_set[feature_index -1], feature_index, num_features)
+		print "Ran Feature %s in" % (feature_set[feature_index -1]), time.time() - start_time, "seconds"	
+		feature_index+=1
+	pl.subplots_adjust(hspace=.5)
+	pl.subplots_adjust(wspace=.3)
+	pl.show()
+
 def validate_csv(in_file):
 	prefix = 'feature_'
 	in_csv = open(in_file)
@@ -31,28 +54,6 @@ def graph_distribution(dist, feature_number, feature_index,  num_features):
 	# pl.xlabel('Feature values')
 	pl.ylabel('Frequency')
 	pl.title("%s: Count: %s" % (feature_number, dist.count()))
-
-def generate_histograms():
-	num_weeks = 15
-	num_features = 25
-	in_file = "features.csv"
-
-	feature_set = validate_csv(in_file)	
-
-	data = np.genfromtxt(in_file, delimiter = ',', skip_header = 1)
-	start_time = time.time()
-	print "loaded data in", time.time() - start_time, "seconds"	
-
-	pl.clf()
-	feature_index = 1
-	while feature_index <= num_features:
-		feature_distribution = data[:, feature_index]
-		start_time = time.time()
-		graph_distribution(np.ma.masked_where(feature_distribution == -1, feature_distribution), feature_set[feature_index -1], feature_index, num_features)
-		print "Ran Feature %s in" % (feature_set[feature_index -1]), time.time() - start_time, "seconds"	
-		feature_index+=1
-	pl.subplots_adjust(hspace=.5)
-	pl.show()
 
 if __name__ == "__main__":
 	generate_histograms()
