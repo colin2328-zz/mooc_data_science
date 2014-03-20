@@ -6,16 +6,11 @@ Created on March 17, 2013
 import csv
 import argparse
 import numpy as np
-        
-def create_features(out_file, in_file, lead, lag):
-    prefix = 'feature_'
-    num_weeks = 15
 
+def validate_csv(in_file):
+    prefix = 'feature_'
     in_csv = open(in_file)
     csv_reader = csv.DictReader(in_csv)
-
-
-    #assert that the csv reader file is valid
     in_header = csv_reader.fieldnames
     feature_set = [] 
     assert('week_number' == in_header[0])
@@ -23,6 +18,10 @@ def create_features(out_file, in_file, lead, lag):
         assert(prefix in string)
         feature_set.append(int(string[len(prefix):]))
     in_csv.close()
+        
+def create_features(out_file, in_file, lead, lag):
+    num_weeks = 15
+    validate_csv(in_file)
 
     out_csv = open(out_file, "wb")
     csv_writer = csv.writer(out_csv, delimiter= ',')

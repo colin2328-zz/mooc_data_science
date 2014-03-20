@@ -33,9 +33,10 @@ def run_regression(in_file, lead, lag):
 	logreg.fit(X, Y)
 	predicted_probs = logreg.predict_proba(X)
 
-	no_dropout_index = logreg.classes_.tolist().index(1)
+	desired_label = 0 # want to predict if student will dropout
+	desired_label_index = logreg.classes_.tolist().index(desired_label) 
 
-	fpr, tpr, thresholds = roc_curve(Y, predicted_probs[:, no_dropout_index],  pos_label=1)
+	fpr, tpr, thresholds = roc_curve(Y, predicted_probs[:, desired_label_index],  pos_label=desired_label)
 	roc_auc = auc(fpr, tpr)
 
 	print "ran regression in", time.time() - start_time, "seconds"
