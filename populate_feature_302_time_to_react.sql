@@ -10,8 +10,8 @@
 ## Josep Marc Mingot Hidalgo
 ## Modified by Colin Taylor (3/5/2014) to insert into database with feature number 302
 
-
-INSERT INTO dropout_feature_values(dropout_feature_id, user_id, dropout_feature_value_week, dropout_feature_value)
+use moocdb
+INSERT INTO moocdb.dropout_feature_values(dropout_feature_id, user_id, dropout_feature_value_week, dropout_feature_value)
 SELECT 
 	302,
 	e.user_id,
@@ -29,11 +29,11 @@ FROM
 	LEFT JOIN (SELECT 
 		b.resource_id, b.resource_release_timestamp, c.url_id
 	FROM
-		resources AS b
+		moocdb.resources AS b
 	LEFT JOIN (SELECT 
 		resource_id, url_id
 	FROM
-		resources_urls) AS c ON b.resource_id = c.resource_id) AS d ON a.url_id = d.url_id) AS e
+		moocdb.resources_urls) AS c ON b.resource_id = c.resource_id) AS d ON a.url_id = d.url_id) AS e
 GROUP BY user_id , week;
 
 
