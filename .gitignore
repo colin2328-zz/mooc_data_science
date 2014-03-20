@@ -2,3 +2,4 @@
 play.py
 features*.csv
 out*.csv
+*.png

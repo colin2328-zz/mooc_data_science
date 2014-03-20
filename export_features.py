@@ -20,8 +20,8 @@ def export_features(connection):
     '''
     
     number_of_weeks = 15 # if you change this, but the date the SQL query to dropout_feature_values.dropout_feature_value_week < number_of_weeks 
-    features_set =   [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 201, 202, 203, 204, 205, 206, 207, 208, 209, 210]
-    missing_values = [0, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1, -1,  0,  0,  0,   0,   0,   0,   0,  -1,   0,   0,  -1,   0,  -1] # defaults for features
+    features_set =   [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 201, 202, 203, 204, 205, 206, 207, 208, 209, 210]
+    missing_values = [0, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1, -1,  0,  0,  0,  0,  0,  0,   0,   0,   0,   0,  -1,   0,   0,  -1,   0,  -1] # defaults for features
     number_of_features = len(features_set)
     cursor = connection.cursor()    
     record_list = list()
@@ -38,6 +38,8 @@ def export_features(connection):
         '''     
     features  = {}
     cursor.execute(sql)
+    print "Executed sql query"
+    
     for i in range(cursor.rowcount):        
         row = cursor.fetchone()
         user_id = row[0]
