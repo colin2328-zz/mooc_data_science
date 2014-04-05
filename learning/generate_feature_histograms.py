@@ -9,7 +9,7 @@ import csv
 
 def generate_histograms():
 	num_weeks = 15
-	num_features = 25
+	num_features = 28
 	in_file = "features.csv"
 
 	feature_set = validate_csv(in_file)	
@@ -20,12 +20,22 @@ def generate_histograms():
 
 	pl.clf()
 	feature_index = 1
+	dropout_vector = data[:, 1]
 	while feature_index <= num_features:
 		feature_distribution = data[:, feature_index]
 		start_time = time.time()
-		graph_distribution(np.ma.masked_where(feature_distribution == -1, feature_distribution), feature_set[feature_index -1], feature_index, num_features)
+
+		m1 = feature_distribution == -1 # remove default values
+		masked = np.ma.masked_array(feature_distribution, m1)
+
+		for x, value in enumerate(masked):
+			if x % 15 != 0 and dropout_vector[x - 1] == 0 : #remove values where the student has already dropped out the prior week
+				masked.mask[x] = True
+
+		graph_distribution(masked.compressed(), feature_set[feature_index -1], feature_index, num_features)
 		print "Ran Feature %s in" % (feature_set[feature_index -1]), time.time() - start_time, "seconds"	
 		feature_index+=1
+
 	pl.subplots_adjust(hspace=.5)
 	pl.subplots_adjust(wspace=.3)
 	pl.show()
@@ -53,7 +63,7 @@ def graph_distribution(dist, feature_number, feature_index,  num_features):
 	# pl.setp(patches, 'facecolor', 'g', 'alpha', 0.75)
 	# pl.xlabel('Feature values')
 	pl.ylabel('Frequency')
-	pl.title("%s: Count: %s" % (feature_number, dist.count()))
+	pl.title("%s: Count: %s" % (feature_number, len(dist)))
 
 if __name__ == "__main__":
 	generate_histograms()
