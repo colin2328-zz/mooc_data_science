@@ -1,5 +1,5 @@
 *.pyc
 play.py
-features*.csv
-out*.csv
+*.csv
 *.png
+*.txt
