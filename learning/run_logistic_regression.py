@@ -43,6 +43,9 @@ def run_regression(in_file, lead, lag):
 
 	# print("Area under the ROC curve : %f" % roc_auc)
 
+	weights = logreg.coef_[0]
+	print weights
+
 	# Plot ROC curve
 	# pl.clf()
 	# pl.plot(fpr, tpr, label='ROC curve (area = %0.3f)' % roc_auc)
@@ -55,7 +58,7 @@ def run_regression(in_file, lead, lag):
 	# pl.legend(loc="lower right")
 	# pl.show()
 
-	return (float(roc_auc))
+	return float(roc_auc)
 
 
 
@@ -63,14 +66,12 @@ def run_regression(in_file, lead, lag):
 if __name__ == "__main__":
 	parser = argparse.ArgumentParser(description='Create feature csv with given lead and lag.')
 	parser.add_argument('--in_file',type=str, default="features.csv") # input csv
-	# parser.add_argument('--lead',type=int, default=1)  # number of weeks ahead to predict
-	# parser.add_argument('--lag',type=int, default=1)  # number of weeks of features to use
+	parser.add_argument('--lead',type=int, default=1)  # number of weeks ahead to predict
+	parser.add_argument('--lag',type=int, default=2)  # number of weeks of features to use
 	args = parser.parse_args()
 	for lead in range (1,15):
 		for lag in range(1, 16 -lead):
 			roc_auc = run_regression(args.in_file, lead, lag)
 			print "lead: %s lag: %s, roc_auc: %s" % (lead, lag, roc_auc)
-
-
 
 	# run_regression(args.in_file, args.lead, args.lag)
