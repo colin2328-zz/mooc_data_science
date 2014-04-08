@@ -44,7 +44,9 @@ def run_regression(in_file, lead, lag):
 	# print("Area under the ROC curve : %f" % roc_auc)
 
 	weights = logreg.coef_[0]
-	print weights
+	print "weights:\n", weights
+
+	print "number of data points:", len(X)
 
 	# Plot ROC curve
 	# pl.clf()
