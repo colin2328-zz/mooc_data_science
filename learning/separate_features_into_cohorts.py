@@ -6,8 +6,12 @@
 # neither, started dropped out 52682
 
 import numpy as np
+in_file_prefix = "features"
 
-in_file = "features.csv"
+file_suffix = ".csv"
+in_file = in_file_prefix + file_suffix
+
+cohorts = ["forum_only", "wiki_only", "no_collab", "forum_and_wiki", "all_dropouts"]
 
 data = np.genfromtxt(in_file, delimiter = ',', skip_header = 1)
 
@@ -18,35 +22,41 @@ forum_post_idx = 3 #number of forum posts is feature number 3
 wiki_idx = 4 #number of wiki edits is feature number 4
 dropout_idx = 1 #dropout feature number
 
-forum_post_count = 0
-wiki_count = 0
-neither_count = 0
-both_count = 0
-dropout_count = 0
+def add_to_data(old_data, new_data):
+	if old_data == None:
+		return new_data
+	else:
+		return np.concatenate((old_data, new_data))
+
+def write_and_print(cohort):
+	data = cohort_datas[cohort]
+	print "%s length: %s" % (cohort, len(data) /15)
+	out_file = in_file_prefix + "_"  + cohort + file_suffix
+	np.savetxt(out_file, data, fmt="%s", delimiter=",")
+
+cohort_datas = {}
+for cohort in cohorts:
+	cohort_datas[cohort] = None
+
 while start_idx < end_idx:
-	stud_data = data[start_idx: start_idx + num_weeks]
+	stud_data = data[start_idx: start_idx + num_weeks, 1:]
 	ever_posted_forum = np.any(stud_data[:,forum_post_idx])
 	ever_posted_wiki = np.any(stud_data[:,wiki_idx])
-	always_dropout = not stud_data[0][1]
+	always_dropout = not stud_data[0][dropout_idx]
 
 	if always_dropout:
-		dropout_count +=1
-		start_idx += num_weeks #move to next student
-		continue
-
-	if ever_posted_forum and not ever_posted_wiki:
-		forum_post_count +=1
+		cohort_datas["all_dropouts"] = add_to_data(cohort_datas["all_dropouts"], stud_data)
+	elif ever_posted_forum and not ever_posted_wiki:
+		cohort_datas["forum_only"] = add_to_data(cohort_datas["forum_only"], stud_data)
 	elif ever_posted_forum and ever_posted_wiki:
-		both_count += 1
+		cohort_datas["forum_and_wiki"] = add_to_data(cohort_datas["forum_and_wiki"], stud_data)
 	elif not ever_posted_forum and ever_posted_wiki:
-		wiki_count +=1
+		cohort_datas["wiki_only"] = add_to_data(cohort_datas["wiki_only"], stud_data)
 	else:
-		neither_count += 1
+		cohort_datas["no_collab"] = add_to_data(cohort_datas["no_collab"], stud_data)
 
 	start_idx += num_weeks #move to next student
 
-print "forum only:", forum_post_count
-print "wiki only:", wiki_count
-print "both:", both_count
-print "neither, but started in the course:", neither_count
-print "neither, started dropped out", dropout_count
+
+for cohort in cohorts:
+	write_and_print(cohort)

@@ -7,26 +7,14 @@ import csv
 import argparse
 import numpy as np
 
-def validate_csv(in_file):
-	prefix = 'feature_'
-	in_csv = open(in_file)
-	csv_reader = csv.DictReader(in_csv)
-	in_header = csv_reader.fieldnames
-	feature_set = [] 
-	assert('week_number' == in_header[0])
-	for string in in_header[1:]:
-		assert(prefix in string)
-		feature_set.append(int(string[len(prefix):]))
-	in_csv.close()
 		
 def create_features(out_file, in_file, lead, lag):
 	num_weeks = 15
-	validate_csv(in_file)
 
 	out_csv = open(out_file, "wb")
 	csv_writer = csv.writer(out_csv, delimiter= ',')
 	
-	data = np.genfromtxt(in_file, delimiter = ',', skip_header = 1)
+	data = np.genfromtxt(in_file, delimiter = ',', skip_header = 0)
 
 	start_idx = 0
 	end_idx = len(data)
@@ -34,7 +22,7 @@ def create_features(out_file, in_file, lead, lag):
 
 	while start_idx < end_idx:
 		#for each student
-		stud_data = data[start_idx:start_idx + num_weeks, 1:]
+		stud_data = data[start_idx:start_idx + num_weeks]
 		start_week = 0
 		while start_week <= num_weeks - (lead + lag):
 			write_array = [start_week]

@@ -44,7 +44,7 @@ def run_regression(in_file, lead, lag):
 	# print("Area under the ROC curve : %f" % roc_auc)
 
 	weights = logreg.coef_[0]
-	print "weights:\n", weights
+	# print "weights:\n", weights
 
 	print "number of data points:", len(X)
 
@@ -67,7 +67,7 @@ def run_regression(in_file, lead, lag):
 
 if __name__ == "__main__":
 	parser = argparse.ArgumentParser(description='Create feature csv with given lead and lag.')
-	parser.add_argument('--in_file',type=str, default="features.csv") # input csv
+	parser.add_argument('--in_file',type=str, default="features_cut_forum_and_wiki.csv") # input csv
 	parser.add_argument('--lead',type=int, default=1)  # number of weeks ahead to predict
 	parser.add_argument('--lag',type=int, default=2)  # number of weeks of features to use
 	args = parser.parse_args()
