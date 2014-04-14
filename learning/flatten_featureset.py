@@ -6,7 +6,6 @@ Created on March 17, 2013
 import csv
 import argparse
 import numpy as np
-
 		
 def create_features(out_file, in_file, lead, lag):
 	num_weeks = 15
@@ -28,7 +27,6 @@ def create_features(out_file, in_file, lead, lag):
 			write_array = [start_week]
 			active_week = start_week
 			while active_week - start_week < lag: #add data from each lag week
-				# write_array += map(lambda (x): '%f' % round(x, 10), stud_data[active_week, 1:].tolist())
 				write_array += stud_data[active_week, 1:].tolist()
 				active_week+=1
 			label = stud_data[start_week + lead + lag - 1][0]

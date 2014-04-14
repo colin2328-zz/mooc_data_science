@@ -6,7 +6,7 @@
 # neither, started dropped out 52682
 
 import numpy as np
-in_file_prefix = "features"
+in_file_prefix = "data/features_cut"
 
 file_suffix = ".csv"
 in_file = in_file_prefix + file_suffix
