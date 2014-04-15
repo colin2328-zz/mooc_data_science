@@ -6,7 +6,9 @@
 # neither, started dropped out 52682
 
 import numpy as np
-in_file_prefix = "data/features_cut"
+import time
+
+in_file_prefix = "data/features"
 
 file_suffix = ".csv"
 in_file = in_file_prefix + file_suffix
@@ -34,15 +36,18 @@ def write_and_print(cohort):
 	out_file = in_file_prefix + "_"  + cohort + file_suffix
 	np.savetxt(out_file, data, fmt="%s", delimiter=",")
 
+start_time = time.time()
+
 cohort_datas = {}
 for cohort in cohorts:
 	cohort_datas[cohort] = None
 
 while start_idx < end_idx:
-	stud_data = data[start_idx: start_idx + num_weeks, 1:]
+	stud_data = data[start_idx: start_idx + num_weeks]
 	ever_posted_forum = np.any(stud_data[:,forum_post_idx])
 	ever_posted_wiki = np.any(stud_data[:,wiki_idx])
 	always_dropout = not stud_data[0][dropout_idx]
+	stud_data = stud_data[:, 1:] # Remove week number
 
 	if always_dropout:
 		cohort_datas["all_dropouts"] = add_to_data(cohort_datas["all_dropouts"], stud_data)
@@ -60,3 +65,5 @@ while start_idx < end_idx:
 
 for cohort in cohorts:
 	write_and_print(cohort)
+
+print "ran in", time.time() - start_time, "seconds"

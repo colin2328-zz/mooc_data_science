@@ -2,7 +2,7 @@ import numpy as np
 import pylab as pl
 import csv
 
-in_file = "logistic_regression_results.csv"
+in_file = "results/logistic_regression_results.csv"
 reader = csv.DictReader(open(in_file, 'r'), delimiter= ",")
 assert (reader.fieldnames == ["lead", "lag", "auc"])
 
