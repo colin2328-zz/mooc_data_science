@@ -10,7 +10,7 @@ import numpy as np
 def create_features(out_file, in_file, lead, lag):
 	num_weeks = 15
 
-	out_csv = open(out_file, "wb")
+	out_csv = open(out_file, "wb") #file format is [start_week list_of_features label]
 	csv_writer = csv.writer(out_csv, delimiter= ',')
 	
 	data = np.genfromtxt(in_file, delimiter = ',', skip_header = 0)

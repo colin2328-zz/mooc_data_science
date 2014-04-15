@@ -8,11 +8,17 @@ import argparse
 import time
 import os
 
-
 from sklearn import linear_model
 from sklearn.metrics import roc_curve, auc
 
-import flatten_featureset 
+import flatten_featureset
+import graph_logistic_regression
+
+def add_to_data(old_data, new_data):
+	if old_data == None:
+		return new_data
+	else:
+		return np.vstack((old_data, new_data))
 
 def plotROC(fpr, tpr, roc_auc, lead, lag):
 	pl.clf()
@@ -36,7 +42,7 @@ def run_regression(in_file, lead, lag):
 	data = np.genfromtxt(intermediate_file, delimiter = ',')
 	os.remove(intermediate_file)
 	
-	X = data[:,1:-1]
+	X = data[:,1:-1] ##file format is [start_week list_of_features label]
 	Y = data[:,-1]
 
 	logreg = linear_model.LogisticRegression(C=1e5)
@@ -53,12 +59,11 @@ def run_regression(in_file, lead, lag):
 	print "number of data points:", len(X)
 
 	# print("Area under the ROC curve : %f" % roc_auc)
-
-	weights = logreg.coef_[0]
+	# weights = logreg.coef_[0]
 	# print "weights:\n", weights
 	# plotROC(fpr, tpr, roc_auc, lead, lag)
 
-	return float(roc_auc)
+	return (float(roc_auc), len(X))
 
 
 if __name__ == "__main__":
@@ -67,12 +72,24 @@ if __name__ == "__main__":
 	parser.add_argument('--lead',type=int, default=1)  # number of weeks ahead to predict
 	parser.add_argument('--lag',type=int, default=2)  # number of weeks of features to use
 	args = parser.parse_args()
+
+	header = "lead,lag,auc"
+
+	#create results_file name
+	features_idx = args.in_file.find("features")
+	footer_idx = args.in_file.find(".csv")
+	results_file = "results/logistic_reg_" + args.in_file[features_idx : footer_idx] + ".csv"
+
+	data = None
 	for lead in range (1,15):
 		for lag in range(1, 16 -lead):
 			try:
-				roc_auc = run_regression(args.in_file, lead, lag)
+				roc_auc, num_data = run_regression(args.in_file, lead, lag)
 				print "lead: %s lag: %s, roc_auc: %s" % (lead, lag, roc_auc)
+				data = add_to_data(data, [lead, lag, roc_auc])
 			except:
 				pass
+	np.savetxt(results_file, data, fmt="%s", delimiter=",", header= header, comments='')
+	graph_logistic_regression.graph_logreg(results_file)
 
 	# run_regression(args.in_file, args.lead, args.lag)
