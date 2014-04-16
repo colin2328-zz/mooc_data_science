@@ -2,7 +2,7 @@
 Created on April 16, 2014
 @author: Colin Taylor
 
-Creates seperate discretized datasets given a continous datasets. Meant to be run after dividing dataset into cohorts, train and test
+Creates seperate discretized datasets given a continous datasets. Meant to be run after dividing dataset into cohorts but before, train and test!
 '''
 
 import numpy as np
@@ -10,10 +10,9 @@ import orange
 
 num_bins = 5
 
-def create_dataset(cohort, train, cut):
+def create_dataset(file_base):
 	file_prefix = "data/"
 	file_suffix = ".csv"
-	file_base = "features" + cut  + "_" + cohort + "_" + train
 	in_file = file_prefix + file_base + file_suffix
 	out_file = file_prefix + file_base + "_bin_%s" % (num_bins) + file_suffix
 	print in_file, out_file
@@ -34,9 +33,12 @@ def create_dataset(cohort, train, cut):
 		digitized = np.digitize(data[:, i], bins)
 		data[:,i] = digitized
 
-	np.savetxt(out_file, data, fmt="%d", delimiter=",")
+	np.savetxt(out_file, data, fmt="%d", delimiter=";")
 
-create_dataset("forum_and_wiki", "train", "_cut")
+cohorts = ["forum_only", "wiki_only", "no_collab", "forum_and_wiki"]
+for cohort in cohorts:
+	file_base = "features_" + cohort
+	create_dataset(file_base)
 
 
 
