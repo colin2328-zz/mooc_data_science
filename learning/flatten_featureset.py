@@ -1,6 +1,8 @@
 '''
 Created on March 17, 2013
 @author: Colin Taylor
+
+Flatten a multi data point, multi time sequenced dataset with a given lead and lag
 '''
 
 import csv

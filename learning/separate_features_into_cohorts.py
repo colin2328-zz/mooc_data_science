@@ -1,10 +1,9 @@
-# Results:
-# forum only: 7860
-# wiki only: 112
-# both: 441
-# neither, but started in the course: 44526
-# neither, started dropped out 52682
+'''
+Created on April 16, 2014
+@author: Colin Taylor
 
+Creates cohorts datasets
+'''
 import numpy as np
 import time
 
@@ -32,7 +31,7 @@ def add_to_data(old_data, new_data):
 
 def write_and_print(cohort):
 	data = cohort_datas[cohort]
-	print "%s length: %s" % (cohort, len(data) /15)
+	print "%s length: %s" % (cohort, len(data) /num_weeks)
 	out_file = in_file_prefix + "_"  + cohort + file_suffix
 	np.savetxt(out_file, data, fmt="%s", delimiter=",")
 
@@ -67,3 +66,11 @@ for cohort in cohorts:
 	write_and_print(cohort)
 
 print "ran in", time.time() - start_time, "seconds"
+
+
+# Results:
+# forum only: 7860
+# wiki only: 112
+# both: 441
+# neither, but started in the course: 44526
+# neither, started dropped out 52682

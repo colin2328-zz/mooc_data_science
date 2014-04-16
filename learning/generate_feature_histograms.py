@@ -10,12 +10,12 @@ import csv
 def generate_histograms():
 	num_weeks = 15
 	num_features = 28
-	in_file = "features.csv"
+	in_file = "data/features.csv"
 
 	feature_set = validate_csv(in_file)	
 
-	data = np.genfromtxt(in_file, delimiter = ',', skip_header = 1)
 	start_time = time.time()
+	data = np.genfromtxt(in_file, delimiter = ',', skip_header = 1)	
 	print "loaded data in", time.time() - start_time, "seconds"	
 
 	pl.clf()
@@ -29,7 +29,7 @@ def generate_histograms():
 		masked = np.ma.masked_array(feature_distribution, m1)
 
 		for x, value in enumerate(masked):
-			if x % 15 != 0 and dropout_vector[x - 1] == 0 : #remove values where the student has already dropped out the prior week
+			if (x % num_weeks == 0 and  dropout_vector[x] == 0) or (x % num_weeks != 0 and dropout_vector[x - 1] == 0) : #remove values where the student was always dropped out or has already dropped out the prior week
 				masked.mask[x] = True
 
 		graph_distribution(masked.compressed(), feature_set[feature_index -1], feature_index, num_features)
