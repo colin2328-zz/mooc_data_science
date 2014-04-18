@@ -16,9 +16,9 @@ cohorts = ["forum_only", "wiki_only", "no_collab", "forum_and_wiki", "all_dropou
 
 data = np.genfromtxt(in_file, delimiter = ',', skip_header = 1)
 
-start_idx = 0
-end_idx = len(data)
 num_weeks = 15
+num_students = len(data) / num_weeks
+
 forum_post_idx = 3 #number of forum posts is feature number 3
 wiki_idx = 4 #number of wiki edits is feature number 4
 dropout_idx = 1 #dropout feature number
@@ -41,8 +41,8 @@ cohort_datas = {}
 for cohort in cohorts:
 	cohort_datas[cohort] = None
 
-while start_idx < end_idx:
-	stud_data = data[start_idx: start_idx + num_weeks]
+for student in range(num_students):
+	stud_data = data[student * num_weeks: (student + 1) * num_weeks]
 	ever_posted_forum = np.any(stud_data[:,forum_post_idx])
 	ever_posted_wiki = np.any(stud_data[:,wiki_idx])
 	always_dropout = not stud_data[0][dropout_idx]
@@ -58,9 +58,6 @@ while start_idx < end_idx:
 		cohort_datas["wiki_only"] = add_to_data(cohort_datas["wiki_only"], stud_data)
 	else:
 		cohort_datas["no_collab"] = add_to_data(cohort_datas["no_collab"], stud_data)
-
-	start_idx += num_weeks #move to next student
-
 
 for cohort in cohorts:
 	write_and_print(cohort)

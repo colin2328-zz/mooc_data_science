@@ -22,35 +22,31 @@ def seperate_train_test(file_base):
 	in_file = file_prefix + file_base + file_suffix
 	data = np.genfromtxt(in_file, delimiter = ',', skip_header = 0)
 
-	start_idx = 0
-	end_idx = len(data)
 	num_weeks = 15
-	num_students = end_idx / num_weeks
+	num_students = len(data) / num_weeks
 
 	#get number of dropouts per dropout week: first week is week 0
 	dropout_count = [0] * num_weeks
-	while start_idx < end_idx:	
-		dropouts = data[start_idx : start_idx + num_weeks, 0].tolist()
+	for student in range(num_students):
+		dropouts = data[student * num_weeks: (student + 1) * num_weeks, 0].tolist()
 		try:
 			dropout_week = dropouts.index(0) 
 		except ValueError:
 			dropout_week = num_weeks - 1
 		dropout_count[dropout_week] +=1
-		start_idx += num_weeks #move to next student
 
 	def write_and_print(cohort, data):
 		print "number of students in %s: %s. Percent of students: %s" % (cohort, len(data) / num_weeks, float(len(data) / num_weeks) / num_students)
 		out_file = file_prefix + file_base + "_"  + cohort + file_suffix
 		np.savetxt(out_file, data, fmt="%s", delimiter=",")
 
-	start_idx = 0
 	dropout_count_train = [0] * num_weeks
 	dropout_count_test = [0] * num_weeks
 	train_data = None
 	test_data = None
-	while start_idx < end_idx:
-		stud_data = data[start_idx : start_idx + num_weeks]
-		dropouts = data[start_idx : start_idx + num_weeks, 0].tolist()
+	for student in range(num_students):
+		stud_data = data[student * num_weeks: (student + 1) * num_weeks]
+		dropouts = data[student * num_weeks: (student + 1) * num_weeks, 0].tolist()
 
 		try:
 			dropout_week = dropouts.index(0) 
@@ -64,8 +60,6 @@ def seperate_train_test(file_base):
 		else:
 			dropout_count_test[dropout_week]+=1
 			test_data = add_to_data(test_data, stud_data)
-
-		start_idx += num_weeks #move to next student
 
 	print "train percent by dropout_week:", [float(dropout_count_train[dropout_week]) / max(1,dropout_count[dropout_week]) for dropout_week in range(15)]
 	print "totals by dropout_week:", dropout_count

@@ -10,20 +10,16 @@ import argparse
 import numpy as np
 		
 def create_features(out_file, in_file, lead, lag):
-	num_weeks = 15
-
 	out_csv = open(out_file, "wb") #file format is [start_week list_of_features label]
 	csv_writer = csv.writer(out_csv, delimiter= ',')
 	
 	data = np.genfromtxt(in_file, delimiter = ',', skip_header = 0)
+	num_weeks = 15
+	num_students = len(data) / num_weeks
 
-	start_idx = 0
-	end_idx = len(data)
+	for student in range(num_students):
+		stud_data = data[student * num_weeks: (student + 1) * num_weeks]
 
-
-	while start_idx < end_idx:
-		#for each student
-		stud_data = data[start_idx:start_idx + num_weeks]
 		start_week = 0
 		while start_week <= num_weeks - (lead + lag):
 			write_array = [start_week]
@@ -37,8 +33,6 @@ def create_features(out_file, in_file, lead, lag):
 			if label == 0:
 				start_week = num_weeks - (lead + lag) #if the label is 0, don't want to include any more of this student's weeks!
 			start_week+=1
-
-		start_idx += num_weeks #move to next student
 	
 if __name__ == "__main__":
 	parser = argparse.ArgumentParser(description='Create feature csv with given lead and lag.')
