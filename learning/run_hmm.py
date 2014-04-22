@@ -1,51 +1,48 @@
 import numpy as np
 import pylab as pl
-from sklearn.hmm import MultinomialHMM
-from sklearn import preprocessing
+import run_train_hmm, run_inference_hmm
 
 
+def add_to_data(old_data, new_data):
+	if old_data == None:
+		return new_data
+	else:
+		return np.vstack((old_data, new_data))
 
-###############################################################################
-in_file = "features_bin_cut.csv"
-data = np.genfromtxt(in_file, delimiter = ',', skip_header = 0).T
+def run_hmm(data_file_base, num_support, num_iterations, train):
+	#If train is true- actually build the model
+	if train:
+		run_train_hmm.train_model(data_file_base, num_support, num_iterations)
 
-le = preprocessing.LabelEncoder()
+	header = "lead,auc"
 
-for idx, col in enumerate(data):
-	le.fit(col)
-	data[idx] = le.transform(col)
+	#create results_file name
+	train_results_file = "results/hmm_" + data_file_base + "_support_%s_train.csv" % (num_support)
+	test_results_file = "results/hmm_" + data_file_base + "_support_%s_test.csv" % (num_support)
 
-X = data.T.astype(int)
+	train_data = None
+	test_data = None
+	for lead in range (1,15):
+		try:
+			train_roc = run_inference_hmm.run_inference(data_file_base, num_support, "train", lead, plot_roc=False)
+			train_data = add_to_data(train_data, [lead, train_roc])
+		except:
+			pass
+		try:
+			test_roc = run_inference_hmm.run_inference(data_file_base, num_support, "test", lead, plot_roc=False)	
+			test_data = add_to_data(test_data, [lead, test_roc])
+		except:
+			pass
 
-###############################################################################
-# Run Gaussian HMM
-print("fitting to HMM and decoding ...")
-n_components = 3 # hidden node support
+	np.savetxt(train_results_file, train_data, fmt="%s", delimiter=",", header= header, comments='')
+	np.savetxt(test_results_file, test_data, fmt="%s", delimiter=",", header= header, comments='')
 
-# make an HMM instance and execute fit
-model = MultinomialHMM(n_components,n_iter = 1)
+	
 
-inputX= X
-print inputX.shape
-model.fit(inputX)
+if __name__ == "__main__":
+	train = True
+	data_file_base = "features_cut_wiki_only_bin_5"
+	num_support = 3
+	num_iterations = 5
+	run_hmm(data_file_base, num_support, num_iterations, train)
 
-print("done\n")
-
-
-###############################################################################
-# print trained parameters and plot
-# print("Transition matrix")
-# print(model.transmat_)
-
-print("Emissions matrix")
-print model.emissionprob_
-
-
-print X.shape
-predicted_probs = model.predict_proba(X[0:30, :])
-
-# print predicted_probs, len(predicted_probs)
-
-
-# fpr, tpr, thresholds = roc_curve(Y, predicted_probs[:, desired_label_index],  pos_label=desired_label)
-# roc_auc = auc(fpr, tpr)

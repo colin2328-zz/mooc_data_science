@@ -1,3 +1,8 @@
+'''
+Created on April 5, 2014
+@author: Colin Taylor
+'''
+
 import numpy as np
 import pylab as pl
 import csv
@@ -20,6 +25,7 @@ def graph_logreg(in_file):
 		pl.plot(lead_aucs.keys(), lead_aucs.values(), label='lag = %s' % lag)
 
 	# Plot AUC curve
+	pl.plot([0, 16], [0.5,0.5], 'k--')
 	pl.ylim([0.0, 1.0])
 	pl.xlabel('Lead')
 	pl.ylabel('AUC of ROC')

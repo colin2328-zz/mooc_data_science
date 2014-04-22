@@ -1,57 +1,16 @@
+'''
+Created on April 17, 2014
+@author: Colin Taylor
+'''
+
 import numpy as np
 import subprocess
+import argparse
+import time
 from sklearn.metrics import roc_curve, auc
 import pylab as pl
-import sys
 
-in_file = "data/features_cut_no_collab_bin_5_train_cut.csv"
-data = np.genfromtxt(in_file, delimiter = ';', skip_header = 0)
-
-
-num_weeks = 15
-lead = 2
-num_students = len(data) / num_weeks
-
-dropout_value = 0 #bin value for a student dropped out
-
-command_base = ["./HMM_EM", "PredictObservationDistribution", "./"]
-
-actual_dropouts = 0
-predicted_dropouts = 0
-num_predictions = 0
-predicted_list = []
-labels_list = []
-
-for student in range(num_students):
-	stud_data = data[student * num_weeks: (student + 1) * num_weeks]
-	for end_week in range(num_weeks - lead):
-		X = stud_data[0: end_week +1, :].flatten()
-		truth_val = stud_data[end_week + lead][0]
-
-		command = command_base + [str(lead)]+ X.astype(str).tolist()
-		results = subprocess.check_output( command)
-
-		lines = results.split("\n")[0:-1]
-		dropout_dist =  np.fromstring(lines[0], sep=";")
-		
-		if dropout_dist[dropout_value] > .65:
-			predicted_dropouts+=1
-
-		if truth_val == dropout_value:
-			actual_dropouts+=1
-
-		labels_list.append(truth_val)
-		predicted_list.append(dropout_dist[dropout_value])
-		num_predictions+=1
-
-print "predicted_dropouts", predicted_dropouts
-print "actual_dropouts", actual_dropouts
-print "num_predictions", num_predictions
-
-try:
-	fpr, tpr, thresholds = roc_curve(labels_list, predicted_list,  pos_label=dropout_value)
-	roc_auc = auc(fpr, tpr)
-
+def plotROC(fpr, tpr, roc_auc, lead):
 	# Plot ROC curve
 	pl.clf()
 	pl.plot(fpr, tpr, label='ROC curve (area = %0.3f)' % roc_auc)
@@ -64,9 +23,76 @@ try:
 	pl.legend(loc="lower right")
 	pl.show()
 
-	print roc_auc
-except ValueError:
-	print "no ROC! There are no positive (dropout) samples!"
+def run_inference(data_file_base, num_support, train_test, lead, plot_roc=False):
+	start_time = time.time()
+
+	data_prefix = "data/"
+	data_suffix = ".csv"
+	models_prefix = "models/"
+	models_suffix = "_support_%s" % (num_support)
+	data_file = data_prefix + data_file_base + "_" + train_test + data_suffix
+	models_dir = models_prefix + data_file_base + models_suffix
+
+	data = np.genfromtxt(data_file, delimiter = ';', skip_header = 0)
+
+	num_weeks = 15
+	num_students = len(data) / num_weeks
+
+	dropout_value = 0 #bin value for a student dropped out
+
+	command_base = ["./HMM_EM", "PredictObservationDistribution", models_dir]
+
+	actual_dropouts = 0
+	predicted_dropouts = 0
+	num_predictions = 0
+	predicted_list = []
+	labels_list = []
+
+	for student in range(num_students):
+		if student % 250 == 25:
+			print "Predicting student %s out of %s students" % (student, num_students)
+		stud_data = data[student * num_weeks: (student + 1) * num_weeks]
+
+		for end_week in range(num_weeks - lead): #try to predict lead weeks ahead, given all prior weeks
+			X = stud_data[0: end_week +1, :].flatten()
+			truth_val = stud_data[end_week + lead, 0]
+
+			if stud_data[end_week, 0] == dropout_value:
+				break #student has already dropped out
+
+			command = command_base + [str(lead)]+ X.astype(str).tolist()
+			results = subprocess.check_output( command)
+
+			lines = results.split("\n")[0:-1]
+			dropout_dist =  np.fromstring(lines[0], sep=";")
+			
+			if dropout_dist[dropout_value] > .65:
+				predicted_dropouts+=1
+
+			if truth_val == dropout_value:
+				actual_dropouts+=1
+
+			labels_list.append(truth_val)
+			predicted_list.append(dropout_dist[dropout_value])
+			num_predictions+=1
+
+	# print "predicted_dropouts", predicted_dropouts
+	# print "actual_dropouts", actual_dropouts
+	# print "num_predictions", num_predictions
+	print "ran inference in", time.time() - start_time, "seconds"
+
+	fpr, tpr, thresholds = roc_curve(labels_list, predicted_list,  pos_label=dropout_value)
+	roc_auc = auc(fpr, tpr)
+	print "roc:", roc_auc
+
+	if plot_roc:
+		plotROC(fpr, tpr, roc_auc, lead)
+	return roc_auc
+
+if __name__ == "__main__":
+	data_file_base = "features_cut_wiki_only_bin_5"
+	num_support = 5
+	run_inference(data_file_base, num_support, "train", 1, True)
 
 
 

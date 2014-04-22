@@ -22,6 +22,7 @@ def graph_hmm(base_file):
 	pl.plot(data[:,0], data[:,1], 'r--', label='Test')
 
 	# Plot AUC curve
+	pl.plot([0, 16], [0.5,0.5], 'k--')
 	pl.ylim([0.0, 1.0])
 	pl.xlabel('Lead')
 	pl.ylabel('AUC of ROC')
