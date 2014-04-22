@@ -36,7 +36,7 @@ def create_features(out_file, in_file, lead, lag):
 	
 if __name__ == "__main__":
 	parser = argparse.ArgumentParser(description='Create feature csv with given lead and lag.')
-	parser.add_argument('in_file',type=str)  # input csv
+	parser.add_argument('in_file',type=str)  # input csv. No header, no week number.
 	parser.add_argument('out_file',type=str) # output csv
 	parser.add_argument('lead',type=int)  # number of weeks ahead to predict
 	parser.add_argument('lag',type=int)  # number of weeks of features to use
