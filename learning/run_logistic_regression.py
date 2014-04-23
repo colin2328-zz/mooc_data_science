@@ -39,11 +39,11 @@ def run_regression(in_file, lead, lag):
 
 	flatten_featureset.create_features(intermediate_file, in_file, lead, lag)
 
-	data = np.genfromtxt(intermediate_file, delimiter = ',')
+	data = np.genfromtxt(intermediate_file, delimiter = ',', skip_header = 1)
 	os.remove(intermediate_file)
 	
-	X = data[:,1:-1] ##file format is [start_week list_of_features label]
-	Y = data[:,-1]
+	X = data[:,1:] ##file format is [label list_of_features]
+	Y = data[:,0]
 
 	logreg = linear_model.LogisticRegression(C=1e5)
 	logreg.fit(X, Y)

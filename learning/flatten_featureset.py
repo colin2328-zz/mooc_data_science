@@ -10,25 +10,30 @@ import argparse
 import numpy as np
 		
 def create_features(out_file, in_file, lead, lag):
-	out_csv = open(out_file, "wb") #file format is [start_week list_of_features label]
+	out_csv = open(out_file, "wb") #file format is [label list_of_features ]
 	csv_writer = csv.writer(out_csv, delimiter= ',')
 	
 	data = np.genfromtxt(in_file, delimiter = ',', skip_header = 0)
 	num_weeks = 15
 	num_students = len(data) / num_weeks
+	num_cols = (data.shape[1] - 1 ) * lag + 1
+
+	header = ["dropout"]
+	for feature_num in range(2, num_cols):
+		header += ["feature_%s" % (feature_num)]
+	csv_writer.writerow(header)
 
 	for student in range(num_students):
 		stud_data = data[student * num_weeks: (student + 1) * num_weeks]
 
 		start_week = 0
 		while start_week <= num_weeks - (lead + lag):
-			write_array = [start_week]
+			label = stud_data[start_week + lead + lag - 1][0]
+			write_array = [label]
 			active_week = start_week
 			while active_week - start_week < lag: #add data from each lag week
 				write_array += stud_data[active_week, 1:].tolist()
 				active_week+=1
-			label = stud_data[start_week + lead + lag - 1][0]
-			write_array += [label]
 			csv_writer.writerow(write_array)
 			if label == 0:
 				start_week = num_weeks - (lead + lag) #if the label is 0, don't want to include any more of this student's weeks!

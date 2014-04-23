@@ -12,7 +12,7 @@ import time
 cohorts = ["forum_only", "wiki_only", "forum_and_wiki", "no_collab"]
 trains = ["train", "test"]
 
-features_base = "features_cut_"
+features_base = "features_"
 in_data_file_prefix = "data/" + features_base
 out_data_file_prefix = "data/flat/" + features_base
 data_file_suffix = ".csv"
