@@ -1,18 +1,14 @@
 '''
-Created on March 17, 2014
+Created on April 24, 2013
 @author: Colin Taylor
+
+Run logistic_regression for all cohorts and leads and lags
+Name pattern of input featureset is: data/features_cut_wiki_only_train.csv
 '''
 import numpy as np
-import pylab as pl
-import argparse
-import time
-import os
-
-from sklearn import linear_model
-from sklearn.metrics import roc_curve, auc
-
-import flatten_featureset
+import logistic_regression
 import graph_logistic_regression
+import time
 
 def add_to_data(old_data, new_data):
 	if old_data == None:
@@ -20,76 +16,38 @@ def add_to_data(old_data, new_data):
 	else:
 		return np.vstack((old_data, new_data))
 
-def plotROC(fpr, tpr, roc_auc, lead, lag):
-	pl.clf()
-	pl.plot(fpr, tpr, label='ROC curve (area = %0.3f)' % roc_auc)
-	pl.plot([0, 1], [0, 1], 'k--')
-	pl.xlim([0.0, 1.0])
-	pl.ylim([0.0, 1.0])
-	pl.xlabel('False Positive Rate')
-	pl.ylabel('True Positive Rate')
-	pl.title('ROC- lead = %s lag = %s' % (lead, lag))
-	pl.legend(loc="lower right")
-	pl.show()
+header = "lead,lag,auc"
+
+cohorts = ["forum_only", "wiki_only", "forum_and_wiki", "no_collab"]
+
+features_base = "features_"
+data_file_prefix = "data/" + features_base
+data_file_suffix = ".csv"
 
 
-def run_regression(in_file, lead, lag):
+for cohort in cohorts:
 	start_time = time.time()
-	intermediate_file = "data/tmp.csv"
+	# figure out how to save and graph both train and test set
+	train_results_file = "results/logistic_reg_" + features_base + cohort + "_train" + ".csv"
+	train_graph_file = "results/images/logistic_reg_" + features_base + cohort + "_train"
+	test_results_file = "results/logistic_reg_" + features_base + cohort + "_test" + ".csv"
+	test_graph_file = "results/images/logistic_reg_" + features_base + cohort + "_test"
 
-	flatten_featureset.create_features(intermediate_file, in_file, lead, lag)
-
-	data = np.genfromtxt(intermediate_file, delimiter = ',', skip_header = 1)
-	os.remove(intermediate_file)
-	
-	X = data[:,1:] ##file format is [label list_of_features]
-	Y = data[:,0]
-
-	logreg = linear_model.LogisticRegression(C=1e5)
-	logreg.fit(X, Y)
-	predicted_probs = logreg.predict_proba(X)
-
-	desired_label = 0 # want to predict if student will dropout
-	desired_label_index = logreg.classes_.tolist().index(desired_label) 
-
-	fpr, tpr, thresholds = roc_curve(Y, predicted_probs[:, desired_label_index],  pos_label=desired_label)
-	roc_auc = auc(fpr, tpr)
-
-	print "ran regression in", time.time() - start_time, "seconds"
-	print "number of data points:", len(X)
-
-	# print("Area under the ROC curve : %f" % roc_auc)
-	# weights = logreg.coef_[0]
-	# print "weights:\n", weights
-	# plotROC(fpr, tpr, roc_auc, lead, lag)
-
-	return (float(roc_auc), len(X))
-
-
-if __name__ == "__main__":
-	parser = argparse.ArgumentParser(description='Create feature csv with given lead and lag.')
-	parser.add_argument('--in_file',type=str, default="data/features_cut_forum_and_wiki.csv") # input csv
-	parser.add_argument('--lead',type=int, default=1)  # number of weeks ahead to predict
-	parser.add_argument('--lag',type=int, default=2)  # number of weeks of features to use
-	args = parser.parse_args()
-
-	header = "lead,lag,auc"
-
-	#create results_file name
-	features_idx = args.in_file.find("features")
-	footer_idx = args.in_file.find(".csv")
-	results_file = "results/logistic_reg_" + args.in_file[features_idx : footer_idx] + ".csv"
-
-	data = None
+	train_data = None
+	test_data = None
 	for lead in range (1,15):
-		for lag in range(1, 16 -lead):
+		for lag in range(1, 16 - lead):
+			train_file = data_file_prefix + cohort + "_train" + data_file_suffix
+			test_file = data_file_prefix + cohort + "_test" + data_file_suffix
 			try:
-				roc_auc, num_data = run_regression(args.in_file, lead, lag)
-				print "lead: %s lag: %s, roc_auc: %s" % (lead, lag, roc_auc)
-				data = add_to_data(data, [lead, lag, roc_auc])
+				train_auc, test_auc = logistic_regression.run_regression(train_file, test_file, lead, lag)
+				train_data = add_to_data(train_data, [lead, lag, train_auc])
+				test_data = add_to_data(test_data, [lead, lag, test_auc])
 			except:
 				pass
-	np.savetxt(results_file, data, fmt="%s", delimiter=",", header= header, comments='')
-	graph_logistic_regression.graph_logreg(results_file)
+	print "Ran logistic regression for %s in %s seconds" % (cohort, time.time() - start_time)
 
-	# run_regression(args.in_file, args.lead, args.lag)
+	np.savetxt(train_results_file, np.atleast_2d(train_data), fmt="%s", delimiter=",", header= header, comments='')
+	graph_logistic_regression.graph_logreg(train_results_file, train_graph_file)
+	np.savetxt(test_results_file, np.atleast_2d(test_data), fmt="%s", delimiter=",", header= header, comments='')
+	graph_logistic_regression.graph_logreg(test_results_file, test_graph_file)

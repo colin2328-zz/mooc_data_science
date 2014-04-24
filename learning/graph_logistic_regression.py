@@ -7,8 +7,10 @@ import numpy as np
 import pylab as pl
 import csv
 
+import utils
 
-def graph_logreg(in_file):	
+
+def graph_logreg(in_file, graph_file):	
 	reader = csv.DictReader(open(in_file, 'r'), delimiter= ",")
 	assert (reader.fieldnames == ["lead", "lag", "auc"])
 
@@ -31,8 +33,10 @@ def graph_logreg(in_file):
 	pl.ylabel('AUC of ROC')
 	pl.title('Logistic Regression AUC as lead and lag vary')
 	pl.legend(loc="lower center", ncol=3)
-	pl.show()
+	# pl.show()
+	utils.save_fig(graph_file)
 
 if __name__ == "__main__":
-	in_file = "results/logistic_reg_features_cut_forum_and_wiki.csv"
-	graph_logreg(in_file)
+	in_file = "results/logistic_reg_features_cut_wiki_only_train.csv"
+	graph_file = "results/images/logist_reg_features_cut_wiki_only_train"
+	graph_logreg(in_file, graph_file)
