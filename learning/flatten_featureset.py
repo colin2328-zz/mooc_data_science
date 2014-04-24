@@ -19,7 +19,7 @@ def create_features(out_file, in_file, lead, lag):
 	num_cols = (data.shape[1] - 1 ) * lag + 1
 
 	header = ["dropout"]
-	for feature_num in range(2, num_cols):
+	for feature_num in range(2, num_cols + 1):
 		header += ["feature_%s" % (feature_num)]
 	csv_writer.writerow(header)
 

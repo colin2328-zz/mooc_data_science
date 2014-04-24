@@ -21,7 +21,7 @@ for cohort in cohorts:
 	for train in trains:
 		start_time = time.time()
 		for lead in range (1,15):
-			for lag in range(1, 16 -lead):
+			for lag in range(1, 16 - lead):
 				in_data_file = in_data_file_prefix + cohort + "_" + train + data_file_suffix
 				out_data_file = out_data_file_prefix + cohort + "_lead_%s_lag_%s_" % (lead, lag) + train + data_file_suffix
 				flatten_featureset.create_features(out_data_file, in_data_file, lead, lag)
