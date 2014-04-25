@@ -34,15 +34,15 @@ def run_hmm(data_file_base, num_support, num_iterations, train):
 		except:
 			pass
 
-	np.savetxt(train_results_file, train_data, fmt="%s", delimiter=",", header= header, comments='')
-	np.savetxt(test_results_file, test_data, fmt="%s", delimiter=",", header= header, comments='')
+	np.savetxt(train_results_file, np.atleast_2d(train_data), fmt="%s", delimiter=",", header= header, comments='')
+	np.savetxt(test_results_file, np.atleast_2d(test_data), fmt="%s", delimiter=",", header= header, comments='')
 
 	
 
 if __name__ == "__main__":
 	train = True
 	data_file_base = "features_cut_wiki_only_bin_5"
-	num_support = 3
+	num_support = 5
 	num_iterations = 5
 	run_hmm(data_file_base, num_support, num_iterations, train)
 

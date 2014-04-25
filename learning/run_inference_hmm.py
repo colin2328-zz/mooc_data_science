@@ -54,16 +54,16 @@ def run_inference(data_file_base, num_support, train_test, lead, plot_roc=False)
 		stud_data = data[student * num_weeks: (student + 1) * num_weeks]
 
 		for end_week in range(num_weeks - lead): #try to predict lead weeks ahead, given all prior weeks
-			X = stud_data[0: end_week +1, :].flatten()
+			X = stud_data[0: end_week + 1, :].flatten()
 			truth_val = stud_data[end_week + lead, 0]
 
 			if stud_data[end_week, 0] == dropout_value:
 				break #student has already dropped out
 
-			command = command_base + [str(lead)]+ X.astype(str).tolist()
-			results = subprocess.check_output( command)
+			command = command_base + [str(lead + end_week)]+ X.astype(str).tolist() #need to pass lead+end_week in- API asks for week to predict
+			observration_dist = subprocess.check_output( command)
 
-			lines = results.split("\n")[0:-1]
+			lines = observration_dist.split("\n")[0:-1]
 			dropout_dist =  np.fromstring(lines[0], sep=";")
 			
 			if dropout_dist[dropout_value] > .65:
