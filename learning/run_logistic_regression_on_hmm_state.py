@@ -2,7 +2,7 @@
 Created on April 24, 2013
 @author: Colin Taylor
 
-Extracts the hidden state probabilities of hmm inference as features for logistic regression
+Runs logistic regression using the hidden state distribution of HMM as probabilities
 '''
 import numpy as np
 import time
@@ -33,10 +33,10 @@ def add_to_data(old_data, new_data):
 	else:
 		return np.vstack((old_data, new_data))
 
-def run_log_reg_hmm(data_file_base, num_support, num_pools, num_iterations, lead, lag, train=False):
+def run_log_reg_hmm(data_file_base, num_support, num_pools, num_iterations, lead, lag, train=False, do_parallel=True):
 	start_time = time.time()
 	num_weeks = 15
-	plot_roc = True
+	plot_roc = False
 
 	data_prefix = "data/"
 	data_suffix = ".csv"
@@ -52,16 +52,16 @@ def run_log_reg_hmm(data_file_base, num_support, num_pools, num_iterations, lead
 
 	#split into train 1 and train 2
 	num_students = len(train_data) / num_weeks
-	num_students_train_hmm =  num_students  / 2
+	num_students_train_hmm =  num_students / 2
 	train_hmm_data = train_data[: num_students_train_hmm * num_weeks]
 	train_logreg_data = train_data[num_students_train_hmm * num_weeks :]
 
 	#train hmm on train_hmm_data
 	np.savetxt(data_file_train_hmm, train_hmm_data, fmt="%d", delimiter=";")
 	if not os.path.exists(models_dir) or train:
-		run_train_hmm.train_model(data_file_base, num_support, num_pools=num_pools, num_iterations=num_iterations, logreg=True)
-	else:
-		print "using old model"
+		run_train_hmm.train_model(data_file_base, num_support, num_pools=num_pools, num_iterations=num_iterations, logreg=True, do_parallel=do_parallel)
+	# else:
+	# 	print "using old model"
 
 	assert os.path.exists(models_dir), "There is no trained model in directory %s" % (models_dir)
 
@@ -95,7 +95,7 @@ def run_log_reg_hmm(data_file_base, num_support, num_pools, num_iterations, lead
 
 	# do inference on hmm to get features for logreg
 	X_train, Y_train = get_log_reg_features(train_logreg_data)
-	print "ran train inference in", time.time() - start_time, "seconds"
+	print "ran train inference in for lead %s lag %s cohort %s support %s" % (lead, lag, data_file_base, num_support), time.time() - start_time, "seconds"
 
 	#train log_reg
 	logreg = linear_model.LogisticRegression()
@@ -107,7 +107,7 @@ def run_log_reg_hmm(data_file_base, num_support, num_pools, num_iterations, lead
 	#do inference on test set to get logreg features
 	start_time = time.time()
 	X_test, Y_test = get_log_reg_features(test_data)
-	print "ran test inference in", time.time() - start_time, "seconds"
+	print "ran test inference in for lead %s lag %s cohort %s support %s" % (lead, lag, data_file_base, num_support), time.time() - start_time, "seconds"
 
 	predicted_probs = logreg.predict_proba(X_train)
 	fpr, tpr, thresholds = roc_curve(Y_train, predicted_probs[:, desired_label_index],  pos_label=desired_label)
@@ -123,13 +123,13 @@ def run_log_reg_hmm(data_file_base, num_support, num_pools, num_iterations, lead
 	return (roc_auc_train, roc_auc_test)
 
 if __name__ == "__main__":
-	data_file_base = "features_cut_forum_only_bin_5"
+	data_file_base = "features_cut_wiki_only_bin_5"
 	num_support = 7
 	num_pools = 10
 	num_iterations = 100
 	lead = 1
-	lag = 2
+	lag = 1
 
-	(roc_auc_train, roc_auc_test) = run_log_reg_hmm(data_file_base, num_support, num_pools, num_iterations, lead, lag, train = True)
+	(roc_auc_train, roc_auc_test) = run_log_reg_hmm(data_file_base, num_support, num_pools, num_iterations, lead, lag, train=True, do_parallel= True)
 
 	print (roc_auc_train, roc_auc_test)

@@ -43,6 +43,7 @@ if __name__ == "__main__":
 	train = True
 	data_file_base = "features_cut_wiki_only_bin_5"
 	num_support = 5
+	num_pools = 10
 	num_iterations = 5
-	run_hmm(data_file_base, num_support, num_iterations, train)
+	run_hmm(data_file_base, num_support, num_pools, num_iterations, train)
 

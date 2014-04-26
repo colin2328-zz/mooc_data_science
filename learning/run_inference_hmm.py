@@ -7,6 +7,8 @@ import numpy as np
 import subprocess
 import argparse
 import time
+import os
+
 from sklearn.metrics import roc_curve, auc
 import pylab as pl
 
@@ -32,6 +34,8 @@ def run_inference(data_file_base, num_support, train_test, lead, plot_roc=False)
 	models_suffix = "_support_%s" % (num_support)
 	data_file = data_prefix + data_file_base + "_" + train_test + data_suffix
 	models_dir = models_prefix + data_file_base + models_suffix
+
+	assert os.path.exists(models_dir), "There is no trained model in directory %s" % (models_dir)
 
 	data = np.genfromtxt(data_file, delimiter = ';', skip_header = 0)
 
@@ -61,7 +65,7 @@ def run_inference(data_file_base, num_support, train_test, lead, plot_roc=False)
 				break #student has already dropped out
 
 			command = command_base + [str(lead + end_week)]+ X.astype(str).tolist() #need to pass lead+end_week in- API asks for week to predict
-			observration_dist = subprocess.check_output( command)
+			observration_dist = subprocess.check_output(command)
 
 			lines = observration_dist.split("\n")[0:-1]
 			dropout_dist =  np.fromstring(lines[0], sep=";")

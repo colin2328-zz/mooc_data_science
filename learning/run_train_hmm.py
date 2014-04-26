@@ -9,43 +9,81 @@ Model is created in models/ dir
 import subprocess
 import utils
 import time
+import os
+import shutil
 
-def train_model(data_file_base, num_support, num_iterations=100):
+from multiprocessing import Pool
+
+def execute_hmm(config_file_iter):
+	config_file, iter_number = config_file_iter.split("___")
+	temp_dir = "temp_%s" % (iter_number)
+	utils.remove_and_make_dir(temp_dir)
+	os.chdir(temp_dir)
+	HMM_command = ["./../HMM_EM", "Train", "../" + config_file] # need to concatenate since we are running binary
+	results = subprocess.check_output(HMM_command)
+	lines = results.split("\n")
+	last_line = ""
+	for line in lines:
+		if "Log-likelihood" in line:
+			last_line = line
+	start_idx = last_line.find(" -")
+	log_liklihood = float(last_line[start_idx:])
+	os.chdir("..")
+	return log_liklihood
+
+def train_model(data_file_base, num_support, num_pools=6, num_iterations=100, logreg=False, do_parallel=True):
 	start_time = time.time()
+	num_trainings = num_pools
 
-	data_prefix = "data/"
-	data_suffix = "_train.csv"
-	config_prefix = "configs/"
-	config_suffix = ".txt"
+	data_prefix = "../data/" #have to go down directory because we are launching this from temp directory
+	config_prefix = "configs/"	
 	models_prefix = "models/"
-	models_suffix = "_support_%s" % (num_support)
+	if logreg:
+		data_suffix = "_train_logreg.csv"
+		config_suffix = "_logreg.txt"
+		models_suffix = "_support_%s_logreg" % (num_support)
+	else:
+		data_suffix = "_train.csv"
+		config_suffix = ".txt"
+		models_suffix = "_support_%s" % (num_support)
 
 	data_file = data_prefix + data_file_base + data_suffix
 	config_file = config_prefix + data_file_base + config_suffix
 	models_dir = models_prefix + data_file_base + models_suffix
 
+	# assert os.path.exists(data_file), "There is no data file %s" % (data_file)
+
 	config_file_contents = \
 	"""28
-	2 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5
-	%s
-	%s
-	%s
-	.0000001
-	0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 22 23 24 25 26 27
-	OTHER""" % (num_support, num_iterations, data_file)
+2 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5
+%s
+%s
+%s
+.0000001
+0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 22 23 24 25 26 27
+OTHER""" % (num_support, num_iterations, data_file)
 
 	with open(config_file, "w") as text_file:
-	    text_file.write(config_file_contents)
+		text_file.write(config_file_contents)
 
-	HMM_command = ["./HMM_EM", "Train", config_file] # need to concatenate since we are running binary
-	subprocess.call(HMM_command)
+	if do_parallel:
+		pool = Pool(num_pools)
+		log_liklihoods = pool.map(execute_hmm, [config_file + "___%s" % (x) for x in range(num_trainings)])
+		
+	else:
+		log_liklihoods = map(execute_hmm, [config_file + "___%s" % (x) for x in range(num_trainings)])
 
-	utils.move_emissions_transitions(models_dir)
+	max_iter = log_liklihoods.index(max(log_liklihoods))
+	utils.move_emissions_transitions("temp_%s/" % max_iter, models_dir)
 	print "built model in", time.time() - start_time, "seconds"
+
+	for x in range(num_trainings):
+		shutil.rmtree("temp_%s/" % x)
 
 if __name__ == "__main__":
 	data_file_base = "features_cut_wiki_only_bin_5"
 	num_support = 5
-	num_iterations = 5
-	train_model(data_file_base, num_support, num_iterations)
+	num_pools = 10
+	num_iterations = 100
+	train_model(data_file_base, num_support, num_pools, num_iterations, logreg=False, do_parallel=True)
 

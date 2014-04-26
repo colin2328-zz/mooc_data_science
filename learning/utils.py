@@ -2,13 +2,16 @@ import os
 import matplotlib.pyplot as plt
 import shutil
 
-def move_emissions_transitions(destination_dir):
+def remove_and_make_dir(directory):
 	# If the directory exists, remove it
-	if os.path.exists(destination_dir):
-		shutil.rmtree(destination_dir)
-	os.makedirs(destination_dir)
-	shutil.move("emissions.txt", destination_dir)
-	shutil.move("transitions.txt", destination_dir)
+	if os.path.exists(directory):
+		shutil.rmtree(directory)
+	os.makedirs(directory)
+
+def move_emissions_transitions(source_dir, destination_dir):
+	remove_and_make_dir(destination_dir)
+	shutil.move(source_dir + "emissions.txt", destination_dir)
+	shutil.move(source_dir + "transitions.txt", destination_dir)
 
 def save_fig(path, ext='png', close=True):
 	"""Save a figure from pyplot.

@@ -14,18 +14,6 @@ from sklearn.metrics import roc_curve, auc
 
 import flatten_featureset
 
-def plotROC(fpr, tpr, roc_auc, lead, lag):
-	pl.clf()
-	pl.plot(fpr, tpr, label='ROC curve (area = %0.3f)' % roc_auc)
-	pl.plot([0, 1], [0, 1], 'k--')
-	pl.xlim([0.0, 1.0])
-	pl.ylim([0.0, 1.0])
-	pl.xlabel('False Positive Rate')
-	pl.ylabel('True Positive Rate')
-	pl.title('ROC- lead = %s lag = %s' % (lead, lag))
-	pl.legend(loc="lower right")
-	pl.show()
-
 def run_regression(train_file, test_file, lead, lag):
 	start_time = time.time()
 	intermediate_file = "data/tmp.csv"
@@ -43,7 +31,7 @@ def run_regression(train_file, test_file, lead, lag):
 	X_test = test_data[:,1:] #file format is [label list_of_features]
 	Y_test = test_data[:,0]
 
-	logreg = linear_model.LogisticRegression(C=1e5)
+	logreg = linear_model.LogisticRegression()
 	logreg.fit(X_train, Y_train)
 
 	desired_label = 0 # want to predict if student will dropout
@@ -57,10 +45,7 @@ def run_regression(train_file, test_file, lead, lag):
 	fpr, tpr, thresholds = roc_curve(Y_test, predicted_probs[:, desired_label_index],  pos_label=desired_label)
 	roc_auc_test = auc(fpr, tpr)
 
-	# print "ran regression in", time.time() - start_time, "seconds"
-
 	return (float(roc_auc_train), float(roc_auc_test))
-
 
 if __name__ == "__main__":
 	parser = argparse.ArgumentParser(description='Create feature csv with given lead and lag.')
