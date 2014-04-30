@@ -2,7 +2,7 @@
 Created on April 24, 2013
 @author: Colin Taylor
 
-Runs logistic_reg_hmm experiments over leads, lags and support
+Runs logistic_reg_hmm experiments over leads, lags and support. Runs in parallel
 '''
 import sys
 import time
@@ -30,7 +30,8 @@ def execute_log_reg_hmm(cohort_support_lead_lag_pools):
 
 
 header = "lead,lag,support,auc"
-cohorts = ["forum_only", "wiki_only", "forum_and_wiki", "no_collab"]
+cohorts = ["wiki_only", "forum_only", "forum_and_wiki", "no_collab"]
+# cohorts = ["wiki_only"]
 features_base = "features_"
 num_pools = 12
 num_iterations = 100
@@ -60,6 +61,6 @@ for cohort in cohorts:
 				if test_auc:
 					test_data = add_to_data(test_data, [int(lead), int(lag), num_support, float(test_auc)])
 		print "Ran logistic regression for %s support %s in %s seconds" % (cohort, num_support, time.time() - start_time)
-
-	np.savetxt(train_results_file, np.atleast_2d(train_data), fmt="%s", delimiter=",", header= header, comments='')
-	np.savetxt(test_results_file, np.atleast_2d(test_data), fmt="%s", delimiter=",", header= header, comments='')
+		start_time = time.time()
+		np.savetxt(train_results_file, np.atleast_2d(train_data), fmt="%s", delimiter=",", header= header, comments='')
+		np.savetxt(test_results_file, np.atleast_2d(test_data), fmt="%s", delimiter=",", header= header, comments='')

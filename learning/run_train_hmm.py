@@ -2,7 +2,7 @@
 Created on April 17, 2014
 @author: Colin Taylor
 
-Runs the training of an HMM given data_file, num_support and num_iterations
+Runs the training of an HMM given data_file, num_support and num_iterations. Runs in parallel
 data_file_base is of the form "features_cut_wiki_only_bin_5_train" and exists in data/ dir
 Model is created in models/ dir
 '''
@@ -75,7 +75,7 @@ OTHER""" % (num_support, num_iterations, data_file)
 
 	max_iter = log_liklihoods.index(max(log_liklihoods))
 	utils.move_emissions_transitions("temp_%s/" % max_iter, models_dir)
-	print "built model in", time.time() - start_time, "seconds"
+	print "built model for %s support %s" % (data_file_base, num_support), time.time() - start_time, "seconds"
 
 	for x in range(num_trainings):
 		shutil.rmtree("temp_%s/" % x)
