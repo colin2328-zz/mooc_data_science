@@ -6,6 +6,7 @@ Runs the training of an HMM given data_file, num_support and num_iterations. Run
 data_file_base is of the form "features_cut_wiki_only_bin_5_train" and exists in data/ dir
 Model is created in models/ dir
 '''
+import numpy as np
 import subprocess
 import utils
 import time
@@ -39,6 +40,25 @@ def train_model(data_file_base, num_support, num_pools=12, num_iterations=100, l
 	config_prefix = "configs/"	
 	models_prefix = "models/"
 	if logreg:
+		num_weeks = 15
+
+		data_prefix = "data/"
+		data_suffix = ".csv"
+		data_file_train_input = data_prefix + data_file_base + "_train" + data_suffix
+		data_file_train_hmm = data_prefix + data_file_base + "_train_logreg" + data_suffix
+
+		train_data = np.genfromtxt(data_file_train_input, delimiter = ';', skip_header = 0)
+
+		#split into train 1 and train 2 - only train on half of the train data if logreg!
+		num_students = len(train_data) / num_weeks
+		num_students_train_hmm =  num_students / 2
+		train_hmm_data = train_data[: num_students_train_hmm * num_weeks]
+		train_logreg_data = train_data[num_students_train_hmm * num_weeks :]
+
+		#train hmm on train_hmm_data
+		np.savetxt(data_file_train_hmm, train_hmm_data, fmt="%d", delimiter=";")
+
+		data_prefix = "../data/" #have to go down directory because we are launching this from temp directory
 		data_suffix = "_train_logreg.csv"
 		config_suffix = "_logreg.txt"
 		models_suffix = "_support_%s_logreg" % (num_support)
@@ -51,7 +71,7 @@ def train_model(data_file_base, num_support, num_pools=12, num_iterations=100, l
 	config_file = config_prefix + data_file_base + config_suffix
 	models_dir = models_prefix + data_file_base + models_suffix
 
-	# assert os.path.exists(data_file), "There is no data file %s" % (data_file)
+	assert os.path.exists(data_file[3:]), "There is no data file %s" % (data_file[3:])
 
 	config_file_contents = \
 	"""28
@@ -85,5 +105,5 @@ if __name__ == "__main__":
 	num_support = 5
 	num_pools = 10
 	num_iterations = 100
-	train_model(data_file_base, num_support, num_pools, num_iterations, logreg=False, do_parallel=True)
+	train_model(data_file_base, num_support, num_pools, num_iterations, logreg=True, do_parallel=True)
 

@@ -58,10 +58,9 @@ def run_log_reg_hmm(data_file_base, num_support, num_pools, num_iterations, lead
 
 	#train hmm on train_hmm_data
 	np.savetxt(data_file_train_hmm, train_hmm_data, fmt="%d", delimiter=";")
+
 	if not os.path.exists(models_dir) or train:
 		run_train_hmm.train_model(data_file_base, num_support, num_pools=num_pools, num_iterations=num_iterations, logreg=True, do_parallel=do_parallel)
-	# else:
-	# 	print "using old model"
 
 	assert os.path.exists(models_dir), "There is no trained model in directory %s" % (models_dir)
 

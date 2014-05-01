@@ -5,7 +5,6 @@ Created on April 17, 2014
 
 import numpy as np
 import subprocess
-import argparse
 import time
 import os
 
