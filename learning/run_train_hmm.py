@@ -31,7 +31,7 @@ def execute_hmm(config_file_iter):
 	os.chdir("..")
 	return log_liklihood
 
-def train_model(data_file_base, num_support, num_pools=6, num_iterations=100, logreg=False, do_parallel=True):
+def train_model(data_file_base, num_support, num_pools=12, num_iterations=100, logreg=False, do_parallel=True):
 	start_time = time.time()
 	num_trainings = num_pools
 

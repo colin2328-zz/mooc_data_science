@@ -46,9 +46,6 @@ def run_inference(data_file_base, num_support, train_test, lead, plot_roc=False)
 
 	command_base = ["./HMM_EM", "PredictObservationDistribution", models_dir]
 
-	actual_dropouts = 0
-	predicted_dropouts = 0
-	num_predictions = 0
 	predicted_list = []
 	labels_list = []
 
@@ -69,21 +66,11 @@ def run_inference(data_file_base, num_support, train_test, lead, plot_roc=False)
 
 			lines = observration_dist.split("\n")[0:-1]
 			dropout_dist =  np.fromstring(lines[0], sep=";")
-			
-			if dropout_dist[dropout_value] > .65:
-				predicted_dropouts+=1
-
-			if truth_val == dropout_value:
-				actual_dropouts+=1
 
 			labels_list.append(truth_val)
 			predicted_list.append(dropout_dist[dropout_value])
-			num_predictions+=1
 
-	# print "predicted_dropouts", predicted_dropouts
-	# print "actual_dropouts", actual_dropouts
-	# print "num_predictions", num_predictions
-	print "ran inference in", time.time() - start_time, "seconds"
+	print "ran train inference in for lead %s cohort %s support %s" % (lead, data_file_base, num_support), time.time() - start_time, "seconds"
 
 	fpr, tpr, thresholds = roc_curve(labels_list, predicted_list,  pos_label=dropout_value)
 	roc_auc = auc(fpr, tpr)
