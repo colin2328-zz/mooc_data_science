@@ -1,6 +1,7 @@
 import os
 import matplotlib.pyplot as plt
 import shutil
+import numpy as np
 
 def remove_and_make_dir(directory):
 	# If the directory exists, remove it
@@ -12,6 +13,12 @@ def move_emissions_transitions(source_dir, destination_dir):
 	remove_and_make_dir(destination_dir)
 	shutil.move(source_dir + "emissions.txt", destination_dir)
 	shutil.move(source_dir + "transitions.txt", destination_dir)
+
+def add_to_data(old_data, new_data):
+	if old_data == None:
+		return new_data
+	else:
+		return np.vstack((old_data, new_data))
 
 def save_fig(path, ext='png', close=True):
 	"""Save a figure from pyplot.

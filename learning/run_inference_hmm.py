@@ -24,15 +24,21 @@ def plotROC(fpr, tpr, roc_auc, lead):
 	pl.legend(loc="lower right")
 	pl.show()
 
-def run_inference(data_file_base, num_support, train_test, lead, plot_roc=False):
+def run_inference(data_file_base, num_support, train_test, lead, plot_roc=False, crossval=False, crossval_num=0):
 	start_time = time.time()
-
 	data_prefix = "data/"
 	data_suffix = ".csv"
-	models_prefix = "models/"
-	models_suffix = "_support_%s" % (num_support)
-	data_file = data_prefix + data_file_base + "_" + train_test + data_suffix
-	models_dir = models_prefix + data_file_base + models_suffix
+
+	if crossval:
+		models_dir = "./"
+		data_file = "../" + data_prefix + data_file_base + "_%s_%s_%s" % ("train", crossval_num, "test") + data_suffix
+		command_base = ["./../HMM_EM", "PredictObservationDistribution", models_dir]
+	else:
+		models_prefix = "models/"
+		models_suffix = "_support_%s" % (num_support)
+		data_file = data_prefix + data_file_base + "_" + train_test + data_suffix
+		models_dir = models_prefix + data_file_base + models_suffix
+		command_base = ["./HMM_EM", "PredictObservationDistribution", models_dir]
 
 	assert os.path.exists(models_dir), "There is no trained model in directory %s" % (models_dir)
 
@@ -40,10 +46,7 @@ def run_inference(data_file_base, num_support, train_test, lead, plot_roc=False)
 
 	num_weeks = 15
 	num_students = len(data) / num_weeks
-
-	dropout_value = 0 #bin value for a student dropped out
-
-	command_base = ["./HMM_EM", "PredictObservationDistribution", models_dir]
+	dropout_value = 0 #bin value for a student dropped out	
 
 	predicted_list = []
 	labels_list = []
@@ -82,7 +85,7 @@ def run_inference(data_file_base, num_support, train_test, lead, plot_roc=False)
 if __name__ == "__main__":
 	data_file_base = "features_cut_wiki_only_bin_5"
 	num_support = 5
-	run_inference(data_file_base, num_support, "train", 1, True)
+	run_inference(data_file_base, num_support, "train", 1, plot_roc =False)
 
 
 
