@@ -29,7 +29,7 @@ def execute_log_reg_hmm(features_base_cohort_support_lead_lag_pools_iterations):
 
 def run_experiments(cohort):
 	header = "lead,lag,support,auc"
-	features_base = "features_cut_"
+	features_base = "features_"
 	num_pools = 12
 	num_iterations = 100
 
@@ -62,7 +62,7 @@ def run_experiments(cohort):
 
 if __name__ == "__main__":
 	parser = argparse.ArgumentParser(description='Create feature csv with given lead and lag.')
-	parser.add_argument('--cohort',type=str, default="wiki_only") # input csv
+	parser.add_argument('--cohort',type=str, default="no_collab") # input csv
 	args = parser.parse_args()
 
 	run_experiments(args.cohort)

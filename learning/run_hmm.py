@@ -6,12 +6,15 @@ Created on April 17, 2014
 import numpy as np
 import pylab as pl
 import run_train_hmm, run_inference_hmm, run_hmm_cross_val
+import utils
 
 def run_hmm(data_file_base, num_support, num_pools, num_iterations, train=True):
+	#run crossval
+	run_hmm_cross_val.do_crossval(data_file_base, num_support, num_iterations=num_iterations, num_pools=num_pools)
+
 	#If train is true- actually build the model
 	if train:
-		run_hmm_cross_val.do_crossval(data_file_base, num_support, num_iterations=num_iterations, num_pools=num_pools)
-		run_train_hmm.train_model(data_file_base, num_support, num_pools=num_pools, num_iterations=num_iterations)
+		run_train_hmm.train_model(data_file_base, num_support, num_pools=num_pools, num_iterations=num_iterations)	
 
 	header = "lead,auc"
 
@@ -34,6 +37,8 @@ def run_hmm(data_file_base, num_support, num_pools, num_iterations, train=True):
 			np.savetxt(test_results_file, np.atleast_2d(test_data), fmt="%s", delimiter=",", header= header, comments='')
 		except:
 			pass
+	np.savetxt(train_results_file, np.atleast_2d(train_data), fmt="%s", delimiter=",", header= header, comments='')
+	np.savetxt(test_results_file, np.atleast_2d(test_data), fmt="%s", delimiter=",", header= header, comments='')
 
 if __name__ == "__main__":
 	train = True
