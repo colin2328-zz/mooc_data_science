@@ -18,6 +18,7 @@ from multiprocessing import Pool
 def execute_hmm(config_file_iter):
 	config_file, iter_number = config_file_iter.split("___")
 	temp_dir = "temp_%s" % (iter_number)
+	time.sleep(1 * int(iter_number))
 	utils.remove_and_make_dir(temp_dir)
 	os.chdir(temp_dir)
 	HMM_command = ["./../HMM_EM", "Train", "../" + config_file] # need to concatenate since we are running binary
@@ -101,9 +102,9 @@ OTHER""" % (num_support, num_iterations, data_file)
 		shutil.rmtree("temp_%s/" % x)
 
 if __name__ == "__main__":
-	data_file_base = "features_cut_wiki_only_bin_5"
+	data_file_base = "features_wiki_only_bin_5"
 	num_support = 5
-	num_pools = 10
-	num_iterations = 100
+	num_pools = 12
+	num_iterations = 20
 	train_model(data_file_base, num_support, num_pools, num_iterations, logreg=True, do_parallel=True)
 

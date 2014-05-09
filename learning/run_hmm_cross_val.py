@@ -17,12 +17,13 @@ def execute_hmm(params):
 	config_prefix, config_suffix, data_file_base, num_support, crossval_num = params.split("___")
 	config_file = config_prefix + data_file_base + "_%s" % crossval_num + config_suffix
 	temp_dir = "temp_%s" % (crossval_num)
+	time.sleep(1 * int(crossval_num))
 	utils.remove_and_make_dir(temp_dir)
 	os.chdir(temp_dir)
 	HMM_command = ["./../HMM_EM", "Train", "../" + config_file] # need to concatenate since we are running binary
 	results = subprocess.check_output(HMM_command)
 	test_data = None
-	for lead in range(1,15):
+	for lead in range(1,14):
 		try:
 			roc = run_inference_hmm.run_inference(data_file_base, num_support, "test", lead, plot_roc=False, crossval=True, crossval_num=crossval_num)
 			test_data = utils.add_to_data(test_data, [lead, roc])

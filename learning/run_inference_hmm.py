@@ -83,6 +83,6 @@ def run_inference(data_file_base, num_support, train_test, lead, plot_roc=False,
 	return roc_auc
 
 if __name__ == "__main__":
-	data_file_base = "features_cut_wiki_only_bin_5"
+	data_file_base = "features_wiki_only_bin_5"
 	num_support = 5
-	run_inference(data_file_base, num_support, "train", 1, plot_roc =False)
+	run_inference(data_file_base, num_support, "train", 8, plot_roc =False)
