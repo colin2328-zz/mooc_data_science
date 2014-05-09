@@ -56,7 +56,7 @@ def run_inference(data_file_base, num_support, train_test, lead, plot_roc=False,
 			print "Predicting student %s out of %s students" % (student, num_students)
 		stud_data = data[student * num_weeks: (student + 1) * num_weeks]
 
-		for end_week in range(num_weeks - lead): #try to predict lead weeks ahead, given all prior weeks
+		for end_week in range(num_weeks - lead -1): #try to predict lead weeks ahead, given all prior weeks
 			X = stud_data[0: end_week + 1, :].flatten()
 			truth_val = stud_data[end_week + lead, 0]
 
@@ -86,6 +86,3 @@ if __name__ == "__main__":
 	data_file_base = "features_cut_wiki_only_bin_5"
 	num_support = 5
 	run_inference(data_file_base, num_support, "train", 1, plot_roc =False)
-
-
-
