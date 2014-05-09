@@ -49,8 +49,8 @@ def run_regression(train_file, test_file, lead, lag):
 
 if __name__ == "__main__":
 	parser = argparse.ArgumentParser(description='Create feature csv with given lead and lag.')
-	parser.add_argument('--train_file',type=str, default="data/features_cut_forum_and_wiki_train.csv") # input csv
-	parser.add_argument('--test_file',type=str, default="data/features_cut_forum_and_wiki_test.csv") # input csv
+	parser.add_argument('--train_file',type=str, default="data/features_forum_and_wiki_train.csv") # input csv
+	parser.add_argument('--test_file',type=str, default="data/features_forum_and_wiki_test.csv") # input csv
 	parser.add_argument('--lead',type=int, default=1)  # number of weeks ahead to predict
 	parser.add_argument('--lag',type=int, default=1)  # number of weeks of features to use
 	args = parser.parse_args()
