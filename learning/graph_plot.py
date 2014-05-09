@@ -4,9 +4,9 @@ import csv
 
 cohorts = ["wiki_only", "no_collab", "forum_only", "forum_and_wiki"]
 
+run = 0
 for cohort in cohorts:
 	in_file = "results/logistic_reg_features_%s_test.csv" % cohort
-	# in_file = "results/"
 	with open(in_file) as f:
 		in_csv = csv.DictReader(f)
 		header = in_csv.fieldnames
@@ -18,9 +18,12 @@ for cohort in cohorts:
 			x, y, auc = row[x_axis], row[y_axis], row["auc"]
 			data[int(float((x))) -1][int(float((y)))-1] = auc
 
+	run +=1
+	pl.subplot(2,2,run)
 	pl.pcolor(data)
 	pl.xlabel(y_axis)
 	pl.ylabel(x_axis)
 	pl.title('Logistic Regression AUC: %s' % cohort)
 	pl.colorbar()
-	pl.show()
+	
+pl.show()
