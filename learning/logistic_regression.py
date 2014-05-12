@@ -37,13 +37,19 @@ def run_regression(train_file, test_file, lead, lag):
 	desired_label = 0 # want to predict if student will dropout
 	desired_label_index = logreg.classes_.tolist().index(desired_label) 
 
-	predicted_probs = logreg.predict_proba(X_train)
-	fpr, tpr, thresholds = roc_curve(Y_train, predicted_probs[:, desired_label_index],  pos_label=desired_label)
-	roc_auc_train = auc(fpr, tpr)
+	try:
+		predicted_probs = logreg.predict_proba(X_train)
+		fpr, tpr, thresholds = roc_curve(Y_train, predicted_probs[:, desired_label_index],  pos_label=desired_label)
+		roc_auc_train = auc(fpr, tpr)
+	except:
+		roc_auc_train = 0
 
-	predicted_probs = logreg.predict_proba(X_test)
-	fpr, tpr, thresholds = roc_curve(Y_test, predicted_probs[:, desired_label_index],  pos_label=desired_label)
-	roc_auc_test = auc(fpr, tpr)
+	try:
+		predicted_probs = logreg.predict_proba(X_test)
+		fpr, tpr, thresholds = roc_curve(Y_test, predicted_probs[:, desired_label_index],  pos_label=desired_label)
+		roc_auc_test = auc(fpr, tpr)
+	except:
+		roc_auc_test = 0
 
 	return (float(roc_auc_train), float(roc_auc_test))
 
@@ -52,7 +58,7 @@ if __name__ == "__main__":
 	parser.add_argument('--train_file',type=str, default="data/features_forum_and_wiki_train.csv") # input csv
 	parser.add_argument('--test_file',type=str, default="data/features_forum_and_wiki_test.csv") # input csv
 	parser.add_argument('--lead',type=int, default=1)  # number of weeks ahead to predict
-	parser.add_argument('--lag',type=int, default=1)  # number of weeks of features to use
+	parser.add_argument('--lag',type=int, default=5)  # number of weeks of features to use
 	args = parser.parse_args()
 
 	train_auc, test_auc = run_regression(args.train_file, args.test_file, args.lead, args.lag)
