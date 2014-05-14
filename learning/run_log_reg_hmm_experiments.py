@@ -44,8 +44,8 @@ def run_experiments(cohort):
 		run_train_hmm.train_model(data_file_base, num_support, num_pools=num_pools, num_iterations=num_iterations, logreg=True, do_parallel=True)
 		pool = Pool(num_pools)
 		args_list = []
-		for lead in range (1,15):
-			for lag in range(1, 16 - lead):
+		for lead in range (1,14):
+			for lag in range(1, 15 - lead):
 				args_list += ["___".join([features_base, cohort, str(num_support), str(lead), str(lag), str(num_pools), str(num_iterations)])]
 		lead_lag_train_tests = pool.map(execute_log_reg_hmm, args_list)
 		for lead_lag_train_test in lead_lag_train_tests:

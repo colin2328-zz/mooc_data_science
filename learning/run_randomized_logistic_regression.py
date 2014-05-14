@@ -23,7 +23,8 @@ data_file_suffix = ".csv"
 results_prefix = "results/randomized_logistic_reg_"
 results_suffix = ".csv"
 
-results_file = results_prefix + features_base + results_suffix
+results_file = results_prefix + features_base + "averaged" + results_suffix
+raw_results_file = results_prefix + features_base + results_suffix
 
 header = "cohort,lead,lag," + ",".join(["feature_%s" % x for x in range(2,29)])
 
@@ -32,16 +33,19 @@ for cohort in cohorts:
 	data_file = data_file_prefix + features_base + cohort + data_file_suffix
 	total_weights = [0]*27
 	num_weights = 0
-	for lead in range (1,15):
-		for lag in range(1, 16 - lead):
-			try:
-				weights = run_regression(data_file, lead, lag)
-				averaged_weights = np.mean(np.reshape(weights, (-1, 27)), axis=0)
-				data = add_to_data(data, [cohort, lead, lag] + averaged_weights.tolist())
-				total_weights += averaged_weights
-				num_weights += 1
-			except Exception as e:
-				pass
+	with open(raw_results_file, "a") as myfile:
+		for lead in range (1,14):
+			for lag in range(1, 15 - lead):
+				try:
+					myfile.write("cohort: %s, lead: %s, lag: %s" % (cohort, lead, lag))
+					weights = run_regression(data_file, lead, lag)
+					myfile.write(weights)
+					averaged_weights = np.mean(np.reshape(weights, (-1, 27)), axis=0)
+					data = add_to_data(data, [cohort, lead, lag] + averaged_weights.tolist())
+					total_weights += averaged_weights
+					num_weights += 1
+				except Exception as e:
+					pass
 
 	average_weights = [weight / num_weights for weight in  total_weights]
 	data = add_to_data(data, [cohort, "-", "-"] + average_weights)

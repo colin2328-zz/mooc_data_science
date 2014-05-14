@@ -18,7 +18,7 @@ def add_to_data(old_data, new_data):
 
 header = "lead,lag,auc"
 
-cohorts = ["forum_only", "wiki_only", "forum_and_wiki", "no_collab"]
+cohorts = ["wiki_only", "forum_and_wiki", "forum_only", "no_collab"]
 
 features_base = "features_"
 data_file_prefix = "data/" + features_base
@@ -35,8 +35,8 @@ for cohort in cohorts:
 
 	train_data = None
 	test_data = None
-	for lead in range (1,15):
-		for lag in range(1, 16 - lead):
+	for lead in range (1,14):
+		for lag in range(1, 15 - lead):
 			train_file = data_file_prefix + cohort + "_train" + data_file_suffix
 			test_file = data_file_prefix + cohort + "_test" + data_file_suffix
 			try:
@@ -48,6 +48,6 @@ for cohort in cohorts:
 	print "Ran logistic regression for %s in %s seconds" % (cohort, time.time() - start_time)
 
 	np.savetxt(train_results_file, np.atleast_2d(train_data), fmt="%s", delimiter=",", header= header, comments='')
-	graph_logistic_regression.graph_logreg(train_results_file, train_graph_file)
+	# graph_logistic_regression.graph_logreg(train_results_file, train_graph_file)
 	np.savetxt(test_results_file, np.atleast_2d(test_data), fmt="%s", delimiter=",", header= header, comments='')
-	graph_logistic_regression.graph_logreg(test_results_file, test_graph_file)
+	# graph_logistic_regression.graph_logreg(test_results_file, test_graph_file)

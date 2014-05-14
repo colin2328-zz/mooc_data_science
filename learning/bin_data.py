@@ -2,7 +2,7 @@
 Created on April 16, 2014
 @author: Colin Taylor
 
-Creates seperate discretized datasets given a continous datasets. Meant to be run after dividing dataset into cohorts but before, train and test!
+Creates seperate discretized datasets given a continous datasets. Meant to be run after dividing dataset into cohorts but before train and test!
 '''
 
 import numpy as np
