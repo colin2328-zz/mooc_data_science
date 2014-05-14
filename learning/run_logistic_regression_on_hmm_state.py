@@ -12,6 +12,8 @@ import sys
 
 from sklearn.metrics import roc_curve, auc
 from sklearn import linear_model
+from sklearn.preprocessing import StandardScaler
+from sklearn.pipeline import Pipeline
 import pylab as pl
 import run_train_hmm
 
@@ -73,40 +75,41 @@ def run_log_reg_hmm(data_file_base, num_support, num_pools, num_iterations, lead
 		for student in range(len(data) / num_weeks):
 			stud_data = data[student * num_weeks: (student + 1) * num_weeks]
 
-			for end_week in range(lag - 1 , num_weeks - lead): #try to predict lead weeks ahead, given all prior weeks
-				X = stud_data[0: end_week + 1, :].flatten()
-				truth_val = stud_data[end_week + lead, 0]
-				
-				if stud_data[end_week, 0] == dropout_value:
-					break #student has already dropped out
+			end_week = lag -1
+			label_week = lead + end_week
+			X = stud_data[0: end_week + 1, :].flatten()
+			truth_val = stud_data[label_week, 0]
+			
+			if stud_data[end_week, 0] == dropout_value:
+				continue #student has already dropped out
 
-				features = np.array([])
-				for prediction_week in range(end_week - lag + 1, end_week + 1):
-					# get hidden state distribution for each prediction_week
-					command = command_base + [str(prediction_week)]+ X.astype(str).tolist() #need to pass lead+end_week in- API asks for week to predict
-					results = subprocess.check_output(command)
-					state_dist = np.fromstring(results, sep=";")[1:-1]
-					prediction_week_features = state_dist[:-1]
-					features = np.concatenate([features, np.atleast_1d(prediction_week_features)])
-				logreg_X = add_to_data(logreg_X, features)
-				logreg_Y += [truth_val]
+			features = np.array([])
+			for prediction_week in range(end_week + 1):
+				# get hidden state distribution for each prediction_week
+				command = command_base + [str(prediction_week)]+ X.astype(str).tolist() #need to pass lead+end_week in- API asks for week to predict
+				results = subprocess.check_output(command)
+				state_dist = np.fromstring(results, sep=";")[1:-1]
+				prediction_week_features = state_dist[:-1]
+				features = np.concatenate([features, np.atleast_1d(prediction_week_features)])
+			logreg_X = add_to_data(logreg_X, features)
+			logreg_Y += [truth_val]
 		return logreg_X, logreg_Y
 
 	# do inference on hmm to get features for logreg
 	X_train, Y_train = get_log_reg_features(train_logreg_data)
-	print "ran train inference in for lead %s lag %s cohort %s support %s" % (lead, lag, data_file_base, num_support), time.time() - start_time, "seconds"
+	print "got train log_reg features for lead %s lag %s cohort %s support %s" % (lead, lag, data_file_base, num_support), time.time() - start_time, "seconds"
 
 	#train log_reg
-	logreg = linear_model.LogisticRegression()
+	logreg = Pipeline([('scale', StandardScaler()), ('logreg', linear_model.LogisticRegression())])
 	logreg.fit(X_train, Y_train)
 
 	desired_label = 0 # want to predict if student will dropout
-	desired_label_index = logreg.classes_.tolist().index(desired_label)
+	desired_label_index = logreg.steps[-1][1].classes_.tolist().index(desired_label) 
 
 	#do inference on test set to get logreg features
 	start_time = time.time()
 	X_test, Y_test = get_log_reg_features(test_data)
-	print "ran test inference in for lead %s lag %s cohort %s support %s" % (lead, lag, data_file_base, num_support), time.time() - start_time, "seconds"
+	print "got test log_reg features for lead %s lag %s cohort %s support %s" % (lead, lag, data_file_base, num_support), time.time() - start_time, "seconds"
 
 	predicted_probs = logreg.predict_proba(X_train)
 	fpr, tpr, thresholds = roc_curve(Y_train, predicted_probs[:, desired_label_index],  pos_label=desired_label)
@@ -122,12 +125,12 @@ def run_log_reg_hmm(data_file_base, num_support, num_pools, num_iterations, lead
 	return (roc_auc_train, roc_auc_test)
 
 if __name__ == "__main__":
-	data_file_base = "features_cut_wiki_only_bin_5"
+	data_file_base = "features_wiki_only_bin_5"
 	num_support = 7
-	num_pools = 10
-	num_iterations = 100
+	num_pools = 2
+	num_iterations = 20
 	lead = 1
-	lag = 1
+	lag = 4
 
 	(roc_auc_train, roc_auc_test) = run_log_reg_hmm(data_file_base, num_support, num_pools, num_iterations, lead, lag, train=True, do_parallel= True)
 

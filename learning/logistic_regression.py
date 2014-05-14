@@ -65,4 +65,4 @@ if __name__ == "__main__":
 	args = parser.parse_args()
 
 	train_auc, test_auc = run_regression(args.train_file, args.test_file, args.lead, args.lag)
-	print "Test auc: %s. Train auc: %s" % (train_auc, test_auc)
+	print "Test auc: %s. Train auc: %s" % (test_auc, train_auc)
