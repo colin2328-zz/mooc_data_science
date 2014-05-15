@@ -42,9 +42,9 @@ def run_hmm(data_file_base, num_support, num_pools, num_iterations, train=True):
 
 if __name__ == "__main__":
 	train = True
-	data_file_base = "features_wiki_only_bin_5"
-	num_support = 5
+	data_file_base = "features_no_collab_pca_bin_5"
+	num_support = 10
 	num_pools = 10
-	num_iterations = 5
+	num_iterations = 100
 
 	run_hmm(data_file_base, num_support, num_pools=num_pools, num_iterations=num_iterations, train=train)
