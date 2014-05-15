@@ -36,6 +36,11 @@ def do_crossval(data_file_base, num_support, num_iterations=100, num_pools=12):
 	num_crossval = 10
 	num_weeks = 15
 
+	num_features = 9
+	observed_support = 5
+	hidden_supports = " ".join(str(x) for x in [2] + [observed_support]*(num_features-1))
+	features = " ".join(str(x) for x in range(num_features))
+
 	data_prefix = "data/"
 	config_prefix = "configs/"	
 	data_suffix = ".csv"
@@ -71,14 +76,14 @@ def do_crossval(data_file_base, num_support, num_iterations=100, num_pools=12):
 		crossval_test = None		
 
 		config_file_contents = \
-	"""28
-2 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5
+	"""%s
+%s
 %s
 %s
 %s
 .0000001
-0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 22 23 24 25 26 27
-OTHER""" % (num_support, num_iterations, "../" + data_file_crossval_train)	
+%s
+OTHER""" % (num_features, hidden_supports, num_support, num_iterations, "../" + data_file_crossval_train, features)
 
 		with open(config_file, "w") as text_file:
 			text_file.write(config_file_contents)
@@ -99,8 +104,8 @@ OTHER""" % (num_support, num_iterations, "../" + data_file_crossval_train)
 				np.savetxt(crossval_file, np.atleast_2d(data), fmt="%s", delimiter=",", header=header, comments='')
 	np.savetxt(crossval_file, np.atleast_2d(data), fmt="%s", delimiter=",", header=header, comments='')
 if __name__ == "__main__":
-	data_file_base = "features_cut_wiki_only_bin_5"
+	data_file_base = "features_no_collab_pca_bin_5"
 	num_support = 5
-	num_pools = 10
-	num_iterations = 100
+	num_pools = 1
+	num_iterations = 20
 	do_crossval(data_file_base, num_support, num_pools=num_pools, num_iterations=num_iterations)

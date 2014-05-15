@@ -37,6 +37,11 @@ def train_model(data_file_base, num_support, num_pools=12, num_iterations=100, l
 	start_time = time.time()
 	num_trainings = num_pools
 
+	num_features = 9
+	observed_support = 5
+	hidden_supports = " ".join(str(x) for x in [2] + [observed_support]*(num_features-1))
+	features = " ".join(str(x) for x in range(num_features))
+
 	data_prefix = "../data/" #have to go down directory because we are launching this from temp directory
 	config_prefix = "configs/"	
 	models_prefix = "models/"
@@ -49,6 +54,7 @@ def train_model(data_file_base, num_support, num_pools=12, num_iterations=100, l
 		data_file_train_hmm = data_prefix + data_file_base + "_train_logreg" + data_suffix
 
 		train_data = np.genfromtxt(data_file_train_input, delimiter = ';', skip_header = 0)
+
 
 		#split into train 1 and train 2 - only train on half of the train data if logreg!
 		num_students = len(train_data) / num_weeks
@@ -75,14 +81,14 @@ def train_model(data_file_base, num_support, num_pools=12, num_iterations=100, l
 	assert os.path.exists(data_file[3:]), "There is no data file %s" % (data_file[3:])
 
 	config_file_contents = \
-	"""28
-2 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5
+	"""%s
+%s
 %s
 %s
 %s
 .0000001
-0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 22 23 24 25 26 27
-OTHER""" % (num_support, num_iterations, data_file)
+%s
+OTHER""" % (num_features, hidden_supports, num_support, num_iterations, data_file, features)
 
 	with open(config_file, "w") as text_file:
 		text_file.write(config_file_contents)
@@ -102,9 +108,9 @@ OTHER""" % (num_support, num_iterations, data_file)
 		shutil.rmtree("temp_%s/" % x)
 
 if __name__ == "__main__":
-	data_file_base = "features_wiki_only_bin_5"
+	data_file_base = "features_no_collab_pca_bin_5"
 	num_support = 5
-	num_pools = 12
+	num_pools = 1
 	num_iterations = 20
-	train_model(data_file_base, num_support, num_pools, num_iterations, logreg=True, do_parallel=True)
+	train_model(data_file_base, num_support, num_pools, num_iterations, logreg=False, do_parallel=True)
 

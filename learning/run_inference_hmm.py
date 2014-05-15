@@ -72,7 +72,7 @@ def run_inference(data_file_base, num_support, train_test, lead, plot_roc=False,
 			labels_list.append(truth_val)
 			predicted_list.append(dropout_dist[dropout_value])
 
-	print "ran train inference in for lead %s cohort %s support %s" % (lead, data_file_base, num_support), time.time() - start_time, "seconds"
+	print "ran train inference in for lead %s cohort %s support %s crossval %s" % (lead, data_file_base, num_support, crossval_num), time.time() - start_time, "seconds"
 
 	fpr, tpr, thresholds = roc_curve(labels_list, predicted_list,  pos_label=dropout_value)
 	roc_auc = auc(fpr, tpr)
@@ -83,6 +83,6 @@ def run_inference(data_file_base, num_support, train_test, lead, plot_roc=False,
 	return roc_auc
 
 if __name__ == "__main__":
-	data_file_base = "features_wiki_only_bin_5"
-	num_support = 5
-	run_inference(data_file_base, num_support, "train", 8, plot_roc =False)
+	data_file_base = "features_cut_no_collab_pca_bin_5"
+	num_support = 3
+	run_inference(data_file_base, num_support, "test", 1, plot_roc =False)

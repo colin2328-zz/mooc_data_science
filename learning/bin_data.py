@@ -36,7 +36,7 @@ def create_dataset(file_base, num_bins):
 		train_data[:,i] = train_digitized
 
 		test_digitized = np.digitize(test_data[:, i], bins)
-		train_data[:,i] = test_digitized
+		test_data[:,i] = test_digitized
 
 	np.savetxt(train_out_file, train_data, fmt="%d", delimiter=";")
 	np.savetxt(test_out_file, test_data, fmt="%d", delimiter=";")
@@ -44,7 +44,7 @@ def create_dataset(file_base, num_bins):
 # cohorts = ["forum_only", "wiki_only", "no_collab", "forum_and_wiki"]
 cohorts = ["no_collab"]
 for cohort in cohorts:
-	for num_bins in [5, 10]:
+	for num_bins in [5]:
 		file_base = "features_%s_pca" % cohort
 		create_dataset(file_base, num_bins)
 

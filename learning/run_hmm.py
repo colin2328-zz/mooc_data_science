@@ -24,7 +24,7 @@ def run_hmm(data_file_base, num_support, num_pools, num_iterations, train=True):
 
 	train_data = None
 	test_data = None
-	for lead in range(1,14):
+	for lead in range(1,2):
 		try:
 			train_roc = run_inference_hmm.run_inference(data_file_base, num_support, "train", lead, plot_roc=False)
 			train_data = utils.add_to_data(train_data, [lead, train_roc])
@@ -42,9 +42,9 @@ def run_hmm(data_file_base, num_support, num_pools, num_iterations, train=True):
 
 if __name__ == "__main__":
 	train = True
-	data_file_base = "features_no_collab_pca_bin_5"
-	num_support = 10
-	num_pools = 10
-	num_iterations = 100
+	data_file_base = "features_cut_no_collab_pca_bin_5"
+	num_support = 3
+	num_pools = 1
+	num_iterations = 3
 
 	run_hmm(data_file_base, num_support, num_pools=num_pools, num_iterations=num_iterations, train=train)
