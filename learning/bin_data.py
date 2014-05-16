@@ -42,7 +42,7 @@ def create_dataset(file_base, num_bins):
 	np.savetxt(test_out_file, test_data, fmt="%d", delimiter=";")
 
 # cohorts = ["forum_only", "wiki_only", "no_collab", "forum_and_wiki"]
-cohorts = ["no_collab"]
+cohorts = ["forum_only", "forum_and_wiki"]
 for cohort in cohorts:
 	for num_bins in [5]:
 		file_base = "features_%s_pca" % cohort

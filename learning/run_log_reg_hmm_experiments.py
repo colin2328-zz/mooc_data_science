@@ -23,9 +23,10 @@ def execute_log_reg_hmm(features_base_cohort_support_lead_lag_pools_iterations):
 	except Exception as e:
 		print e
 
-def run_experiments(cohort, num_support, num_pools, num_iterations):
+def run_experiments(data_file_base, num_support, num_pools, num_iterations):
 	header = "lead,lag,support,auc"
-	features_base = "features_cut_"
+	features_base = "features_"
+	cohort = data_file_base[len(features_base):len("_bin_5") * -1]
 
 	start_time = time.time()
 	train_results_file = "results/logistic_reg_hmm_" + features_base + cohort + "_bin_5_support_%s_train" % num_support + ".csv"
@@ -61,11 +62,11 @@ def run_experiments(cohort, num_support, num_pools, num_iterations):
 
 if __name__ == "__main__":
 	parser = argparse.ArgumentParser(description='Create feature csv with given lead and lag.')
-	parser.add_argument('--cohort',type=str, default="no_collab_pca")
+	parser.add_argument('--data_file_base',type=str, default="features_cut_no_collab_pca_bin_5")
 	parser.add_argument('--support',type=str, default=5)
 	args = parser.parse_args()
 
 	num_pools = 12
 	num_iterations = 10
 
-	run_experiments(args.cohort, args.support, num_pools, num_iterations)
+	run_experiments(args.data_file_base, args.support, num_pools, num_iterations)
