@@ -2,6 +2,7 @@ import os
 import matplotlib.pyplot as plt
 import shutil
 import numpy as np
+import pylab as pl
 
 def remove_and_make_dir(directory):
 	# If the directory exists, remove it
@@ -23,6 +24,18 @@ def add_to_data(old_data, new_data):
 		return new_data
 	else:
 		return np.vstack((old_data, new_data))
+
+def plotROC(fpr, tpr, roc_auc, lead, lag):
+	pl.clf()
+	pl.plot(fpr, tpr, label='ROC curve (area = %0.3f)' % roc_auc)
+	pl.plot([0, 1], [0, 1], 'k--')
+	pl.xlim([0.0, 1.0])
+	pl.ylim([0.0, 1.0])
+	pl.xlabel('False Positive Rate')
+	pl.ylabel('True Positive Rate')
+	pl.title('ROC- lead = %s lag = %s' % (lead, lag))
+	pl.legend(loc="lower right")
+	pl.show()
 
 def save_fig(path, ext='png', close=True):
 	"""Save a figure from pyplot.

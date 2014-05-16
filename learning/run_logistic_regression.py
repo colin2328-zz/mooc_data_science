@@ -9,12 +9,7 @@ import numpy as np
 import logistic_regression
 import graph_logistic_regression
 import time
-
-def add_to_data(old_data, new_data):
-	if old_data == None:
-		return new_data
-	else:
-		return np.vstack((old_data, new_data))
+import utils
 
 header = "lead,lag,auc"
 
@@ -35,19 +30,19 @@ for cohort in cohorts:
 
 	train_data = None
 	test_data = None
+	crossval_data = None
 	for lead in range (1,14):
 		for lag in range(1, 15 - lead):
 			train_file = data_file_prefix + cohort + "_train" + data_file_suffix
 			test_file = data_file_prefix + cohort + "_test" + data_file_suffix
 			try:
-				train_auc, test_auc = logistic_regression.run_regression(train_file, test_file, lead, lag)
-				train_data = add_to_data(train_data, [lead, lag, train_auc])
-				test_data = add_to_data(test_data, [lead, lag, test_auc])
+				train_auc, test_auc, crossval_auc = logistic_regression.load_and_run_regression(train_file, test_file, lead, lag)
+				train_data = utils.add_to_data(train_data, [lead, lag, train_auc])
+				test_data = utils.add_to_data(test_data, [lead, lag, test_auc])
+				crossval_data = utils.add_to_data(crossval_data, [lead, lag, crossval_auc])
 			except:
 				pass
 	print "Ran logistic regression for %s in %s seconds" % (cohort, time.time() - start_time)
 
 	np.savetxt(train_results_file, np.atleast_2d(train_data), fmt="%s", delimiter=",", header= header, comments='')
-	# graph_logistic_regression.graph_logreg(train_results_file, train_graph_file)
 	np.savetxt(test_results_file, np.atleast_2d(test_data), fmt="%s", delimiter=",", header= header, comments='')
-	# graph_logistic_regression.graph_logreg(test_results_file, test_graph_file)
