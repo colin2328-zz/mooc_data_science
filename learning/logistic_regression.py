@@ -47,7 +47,7 @@ def run_regression(X_train, Y_train, X_test, Y_test, lead, lag):
 
 	#do cross-validation
 	try:
-		auc_crossval =  np.mean(cross_validation.cross_val_score(logreg, X_train, Y_train, scoring='roc_auc', cv=num_crossval))
+		auc_crossval =  np.mean(cross_validation.cross_val_score(logreg, np.array(X_train), np.array(Y_train), scoring='roc_auc', cv=num_crossval))
 	except:
 		auc_crossval = 0.0
 
@@ -82,5 +82,5 @@ if __name__ == "__main__":
 	parser.add_argument('--lag',type=int, default=4)  # number of weeks of features to use
 	args = parser.parse_args()
 
-	train_auc, test_auc = load_and_run_regression(args.train_file, args.test_file, args.lead, args.lag)
-	print "Test auc: %s. Train auc: %s" % (test_auc, train_auc)
+	train_auc, test_auc, crossval_auc = load_and_run_regression(args.train_file, args.test_file, args.lead, args.lag)
+	print "Test auc: %s. Train auc: %s. Crossval auc: %s" % (test_auc, train_auc, crossval_auc)

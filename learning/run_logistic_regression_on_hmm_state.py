@@ -90,9 +90,9 @@ def run_log_reg_hmm(data_file_base, num_support, num_pools, num_iterations, lead
 
 if __name__ == "__main__":
 	data_file_base = "features_cut_no_collab_pca_bin_5"
-	num_support = 7
+	num_support = 3
 	num_pools = 2
-	num_iterations = 20
+	num_iterations = 10
 	lead = 1
 	lag = 4
 
