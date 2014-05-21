@@ -10,7 +10,7 @@ import csv
 def generate_histograms():
 	num_weeks = 15
 	num_features = 28
-	in_file = "data/features.csv"
+	in_file = "data/features_bin_5.csv"
 
 	feature_set = validate_csv(in_file)	
 
@@ -19,9 +19,8 @@ def generate_histograms():
 	print "loaded data in", time.time() - start_time, "seconds"	
 
 	pl.clf()
-	feature_index = 1
 	dropout_vector = data[:, 1]
-	while feature_index <= num_features:
+	for feature_index in range(1, num_features + 1):
 		feature_distribution = data[:, feature_index]
 		start_time = time.time()
 
@@ -34,7 +33,6 @@ def generate_histograms():
 
 		graph_distribution(masked.compressed(), feature_set[feature_index -1], feature_index, num_features)
 		print "Ran Feature %s in" % (feature_set[feature_index -1]), time.time() - start_time, "seconds"	
-		feature_index+=1
 
 	pl.subplots_adjust(hspace=.5)
 	pl.subplots_adjust(wspace=.3)

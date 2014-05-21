@@ -47,6 +47,3 @@ for cohort in cohorts:
 	for num_bins in [5]:
 		file_base = "features_%s_pca" % cohort
 		create_dataset(file_base, num_bins)
-
-
-
