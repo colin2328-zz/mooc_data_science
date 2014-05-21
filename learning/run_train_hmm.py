@@ -12,6 +12,7 @@ import utils
 import time
 import os
 import shutil
+import sys
 
 from multiprocessing import Pool
 
@@ -22,6 +23,7 @@ def execute_hmm(config_file_iter):
 	utils.remove_and_make_dir(temp_dir)
 	os.chdir(temp_dir)
 	HMM_command = ["./../HMM_EM", "Train", "../" + config_file] # need to concatenate since we are running binary
+
 	results = subprocess.check_output(HMM_command)
 	lines = results.split("\n")
 	last_line = ""
@@ -36,11 +38,6 @@ def execute_hmm(config_file_iter):
 def train_model(data_file_base, num_support, num_pools=12, num_iterations=100, logreg=False, do_parallel=True):
 	start_time = time.time()
 	num_trainings = num_pools
-
-	num_features = 9
-	observed_support = 5
-	hidden_supports = " ".join(str(x) for x in [2] + [observed_support]*(num_features-1))
-	features = " ".join(str(x) for x in range(num_features))
 
 	data_prefix = "../data/" #have to go down directory because we are launching this from temp directory
 	config_prefix = "configs/"	
@@ -79,6 +76,11 @@ def train_model(data_file_base, num_support, num_pools=12, num_iterations=100, l
 	models_dir = models_prefix + data_file_base + models_suffix
 
 	assert os.path.exists(data_file[3:]), "There is no data file %s" % (data_file[3:])
+	temp = np.genfromtxt(data_file[3:], delimiter=";")
+	num_features = temp.shape[1]
+	observed_support = 5
+	hidden_supports = " ".join(str(x) for x in [2] + [observed_support]*(num_features-1))
+	features = " ".join(str(x) for x in range(num_features))
 
 	config_file_contents = \
 	"""%s
@@ -108,9 +110,8 @@ OTHER""" % (num_features, hidden_supports, num_support, num_iterations, data_fil
 		shutil.rmtree("temp_%s/" % x)
 
 if __name__ == "__main__":
-	data_file_base = "features_no_collab_pca_bin_5"
+	data_file_base = "features_forum_and_wiki_pca_bin_5"
 	num_support = 5
 	num_pools = 1
 	num_iterations = 20
 	train_model(data_file_base, num_support, num_pools, num_iterations, logreg=False, do_parallel=True)
-

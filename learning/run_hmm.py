@@ -39,7 +39,7 @@ def run_hmm(data_file_base, num_support, num_pools, num_iterations, train=True):
 
 if __name__ == "__main__":
 	train = True
-	data_file_base = "features_cut_no_collab_pca_bin_5"
+	data_file_base = "features_forum_and_wiki_pca_bin_5"
 	num_support = 3
 	num_pools = 12
 	num_iterations = 3
