@@ -25,16 +25,16 @@ def run_regression(data_file, lead, lag):
 	X_train = train_data[:,1:] #file format is [label list_of_features]
 	Y_train = train_data[:,0]
 
-	logreg = linear_model.RandomizedLogisticRegression()
+	logreg = linear_model.RandomizedLogisticRegression(n_jobs=12)
 	logreg.fit(X_train, Y_train)
 
 	return logreg.scores_
 
 if __name__ == "__main__":
 	parser = argparse.ArgumentParser(description='Create feature csv with given lead and lag.')
-	parser.add_argument('--data_file',type=str, default="data/features_cut_forum_and_wiki.csv") # input csv
+	parser.add_argument('--data_file',type=str, default="data/features_no_collab.csv") # input csv
 	parser.add_argument('--lead',type=int, default=1)  # number of weeks ahead to predict
 	parser.add_argument('--lag',type=int, default=1)  # number of weeks of features to use
 	args = parser.parse_args()
 
-	run_regression(args.data_file, args.lead, args.lag)
+	print run_regression(args.data_file, args.lead, args.lag)
