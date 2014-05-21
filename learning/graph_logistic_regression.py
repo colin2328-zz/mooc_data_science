@@ -33,10 +33,10 @@ def graph_logreg(in_file, graph_file):
 	pl.ylabel('AUC of ROC')
 	pl.title('Logistic Regression AUC as lead and lag vary')
 	pl.legend(loc="lower center", ncol=3)
-	# pl.show()
-	utils.save_fig(graph_file)
+	pl.show()
+	# utils.save_fig(graph_file)
 
 if __name__ == "__main__":
-	in_file = "results/logistic_reg_features_cut_wiki_only_train.csv"
+	in_file = "results/logistic_reg_features_wiki_only_train.csv"
 	graph_file = "results/images/logist_reg_features_cut_wiki_only_train"
 	graph_logreg(in_file, graph_file)

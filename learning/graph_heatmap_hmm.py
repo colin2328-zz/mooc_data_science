@@ -2,10 +2,16 @@ import matplotlib.pyplot as pl
 import pandas as pd
 import numpy as np
 import os
+import utils
+
+cohorts = ["no_collab_pca", "wiki_only", "forum_and_wiki_pca", "forum_only_pca"]
+cohorts +=["no_collab", "forum_and_wiki", "forum_only"]
+AUC_fontsize = 8
+med_fontsize = 12
+fontsize = 18
 
 hmm_results_dir = "/home/colin/evo/hmm_results/combined/"
 task_dirs =  os.listdir(hmm_results_dir)
-
 
 cohort_dict = {}
 for task_dir in task_dirs:
@@ -25,28 +31,71 @@ for task_dir in task_dirs:
 		lead_dict = df.set_index("lead").to_dict()["auc"]
 		support_dict[support] = lead_dict
 
-# cohorts = ["wiki_only", "forum_and_wiki_pca", "no_collab_pca", "forum_only_pca"]
-cohorts = ["no_collab_pca"]
+
 for cohort in cohorts:
-	data=np.zeros([14, 13])
+	num_supports = 14
+	num_leads = 13
+	data=np.zeros([num_supports, num_leads])
 	support_dict = cohort_dict[cohort]
 	for support in range(3, 30, 2):
-		for lead in range(1, 14):
+		for lead in range(1, num_leads + 1):
 			try:
 				data[support/2 - 1,lead -1] = support_dict[support][float(lead)]
 			except:
 				pass
 
+	for x in range(num_supports):
+		for y in range(num_leads):
+				if data[x,y] > 0:
+					pl.text(x - .3, y -.1,((int)(100*data[x][y]))/100.0,fontsize=AUC_fontsize)
+
 	ax = pl.gca()
-	print data.shape	
-	pl.imshow(np.transpose(data), interpolation='nearest',origin='lower', vmin=0, vmax=1, cmap='binary')
-	ax.set_xlabel("support", fontsize=20)
-	ax.set_ylabel("lead", fontsize=20)
-	ax.set_title('HMM AUC: %s' % cohort, fontsize=20)
-	ax.set_xticks(range(14))
-	ax.set_yticks(range(13))
-	ax.set_xticklabels(range(3, 30, 2))
-	ax.set_yticklabels(range(1,14))
-	pl.colorbar()
-	pl.show()
-	break
+	pl.imshow(np.transpose(data), interpolation='nearest',origin='lower', vmin=0, vmax=1)
+	ax.set_xlabel("Number of hidden support", fontsize=fontsize)
+	ax.set_ylabel("Lead", fontsize=fontsize)
+	ax.set_title('HMM AUC: %s' % cohort, fontsize=fontsize)
+
+	ax.set_xticks(range(num_supports))
+	ax.set_yticks(range(num_leads))
+	ax.set_xticklabels(range(3, 30, 2), fontsize=med_fontsize)
+	ax.set_yticklabels(range(1,num_leads), fontsize=med_fontsize)
+
+	cb = pl.colorbar()
+	for t in cb.ax.get_yticklabels():
+		t.set_fontsize(med_fontsize)
+	# pl.show()
+
+	# utils.save_fig("/home/colin/evo/papers/thesis/figures/hmm/%s" % cohort)
+
+	
+
+for cohort in cohorts:
+	#plot mean AUC over support:
+	benchmarks = {
+	"no_collab": 0.775938784743,
+	"wiki_only": 0.609065848058,
+	"forum_and_wiki": 0.648563087051,
+	"forum_only": 0.76697590925}
+
+	support_dict = cohort_dict[cohort]
+	means = {}
+	for support in range(3, 30,2):
+		data = support_dict[support]
+		mean = np.nanmean([ y for (x,y) in data.items()])
+		means[support] = mean
+
+	pl.clf()
+	ax = pl.gca()
+	pl.plot(range(3, 30,2), [means[support] for support in range(3, 30,2)])
+	# pl.title('HMM: %s' % cohort, fontsize=fontsize)
+	ax.set_xlabel("Number of support", fontsize=fontsize)
+	ax.set_ylabel("Mean AUC over all leads", fontsize=fontsize)
+	ax.set_ylim([0.4, 1.0])
+	ax.set_xlim([2, 30])
+	benchmark_auc = benchmarks[cohort.replace("_pca", "")]
+	pl.plot([0, 30], [benchmark_auc, benchmark_auc], color='k', linestyle='--', linewidth=2, label='Logistic regression benchmark AUC: %s' % np.around(benchmark_auc, decimals=2))
+	pl.legend(loc="lower center", ncol=3)
+	utils.save_fig("/home/colin/evo/papers/thesis/figures/hmm/%s_support_over_time" % (cohort))
+	# pl.show()
+
+	# break

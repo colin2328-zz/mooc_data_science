@@ -73,7 +73,7 @@ def save_fig(path, ext='png', close=True):
 	savepath = os.path.join(directory, filename)
 
 	# Actually save the figure
-	plt.savefig(savepath)
+	plt.savefig(savepath, dpi=300)
 	
 	# Close it
 	if close:
