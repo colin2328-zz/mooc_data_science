@@ -72,7 +72,7 @@ for cohort in cohorts:
 
 	ax.set_xticks(range(n))
 	ax.set_yticks(range(n))
-	ax.set_xticklabels(range(1,n+1),fontsize=med_fontsize)
+	ax.set_xticklabels(range(2,n+2),fontsize=med_fontsize)
 	ax.set_yticklabels(range(1,n+1),fontsize=med_fontsize)
 	
 	cb = pl.colorbar()
