@@ -6,8 +6,8 @@ import utils
 
 cohorts = ["no_collab_pca", "wiki_only", "forum_and_wiki_pca", "forum_only_pca"]
 AUC_fontsize = 8
-med_fontsize = 12
-fontsize = 18
+med_fontsize = 15
+fontsize = 22
 
 hmm_results_dir = "/home/colin/evo/hmm_results/combined/"
 task_dirs =  os.listdir(hmm_results_dir)
@@ -95,6 +95,7 @@ for cohort in cohorts:
 	# pl.title('HMM logreg: %s' % cohort, fontsize=fontsize)
 	ax.set_xlabel("Number of support", fontsize=fontsize)
 	ax.set_ylabel("Mean AUC of all leads and lags", fontsize=fontsize)
+	pl.tick_params(axis="both", which='major', labelsize=med_fontsize)
 	ax.set_ylim([0.4, 1.0])
 	ax.set_xlim([2, 30])
 	benchmark_auc = benchmarks[cohort.replace("_pca", "")]

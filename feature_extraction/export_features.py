@@ -87,7 +87,7 @@ def main():
     '''
     This is the main function
     '''
-    connection = mdb.connect(user="root",passwd="edx2013", port=3316,db="moocdb")#, charset='utf8', use_unicode=True);
+    connection = mdb.connect(user="root",passwd="", port=3316,db="moocdb")#, charset='utf8', use_unicode=True);
     # connection = mdb.connect(user="root",passwd="", port=3306,db="moocdb")#, charset='utf8', use_unicode=True);
 
     export_features(connection)

@@ -7,8 +7,8 @@ import utils
 cohorts = ["no_collab_pca", "wiki_only", "forum_and_wiki_pca", "forum_only_pca"]
 cohorts +=["no_collab", "forum_and_wiki", "forum_only"]
 AUC_fontsize = 8
-med_fontsize = 12
-fontsize = 18
+med_fontsize = 15
+fontsize = 22
 
 hmm_results_dir = "/home/colin/evo/hmm_results/combined/"
 task_dirs =  os.listdir(hmm_results_dir)
@@ -53,7 +53,7 @@ for cohort in cohorts:
 	pl.imshow(np.transpose(data), interpolation='nearest',origin='lower', vmin=0, vmax=1)
 	ax.set_xlabel("Number of hidden support", fontsize=fontsize)
 	ax.set_ylabel("Lead", fontsize=fontsize)
-	ax.set_title('HMM AUC: %s' % cohort, fontsize=fontsize)
+	# ax.set_title('HMM AUC: %s' % cohort, fontsize=fontsize)
 
 	ax.set_xticks(range(num_supports))
 	ax.set_yticks(range(num_leads))
@@ -65,7 +65,7 @@ for cohort in cohorts:
 		t.set_fontsize(med_fontsize)
 	# pl.show()
 
-	# utils.save_fig("/home/colin/evo/papers/thesis/figures/hmm/%s" % cohort)
+	utils.save_fig("/home/colin/evo/papers/thesis/figures/hmm/%s" % cohort)
 
 	
 
@@ -90,6 +90,7 @@ for cohort in cohorts:
 	# pl.title('HMM: %s' % cohort, fontsize=fontsize)
 	ax.set_xlabel("Number of support", fontsize=fontsize)
 	ax.set_ylabel("Mean AUC over all leads", fontsize=fontsize)
+	pl.tick_params(axis="both", which='major', labelsize=med_fontsize)
 	ax.set_ylim([0.4, 1.0])
 	ax.set_xlim([2, 30])
 	benchmark_auc = benchmarks[cohort.replace("_pca", "")]

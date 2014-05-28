@@ -36,7 +36,7 @@ for cohort in cohorts:
 	pl.imshow(np.transpose(data), interpolation='nearest',origin='lower', vmin=0, vmax=1, cmap='RdBu')
 	ax.set_xlabel("The predicted week number", fontsize=fontsize)
 	ax.set_ylabel("Lag", fontsize=fontsize)
-	pl.title('Logistic Regression AUC: %s' % cohort, fontsize=fontsize)
+	# pl.title('Logistic Regression AUC: %s' % cohort, fontsize=fontsize)
 
 	ax.set_xticks(range(n))
 	ax.set_yticks(range(n))

@@ -3,6 +3,7 @@
 -- @author: Franck for ALFA, MIT lab: franck.dernoncourt@gmail.com
 -- Edited by Colin Taylor on Nov 27, 2013 to 
 -- Meant to be run after create_dropout_feature_values.sql and users_populate_user_last_submission_id.sql
+-- March 3rd, 2012 is the start of the 6.002x course. This value will need to be changed to the start of whatever course you are predicting
 
 ALTER TABLE `moocdb`.`users` 
 ADD COLUMN `user_dropout_week` INT(2) NULL ;
